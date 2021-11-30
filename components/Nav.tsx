@@ -13,7 +13,7 @@ const Nav = () => (
     <nav>
       <Mn>
         <li>
-          <Link href="/daily-log">
+          <Link href="/">
             <a>
               <IcWrap style={{ margin: "-.7rem .4rem 0 0" }}>
                 <IcTdLog />
