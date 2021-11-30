@@ -21,6 +21,7 @@ const RspWrap = styled.div`
   min-height: 100vh;
   background-color: #e9eaef;
   overflow-y: hidden;
+  position: relative;
 `;
 
 export default App;

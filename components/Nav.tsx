@@ -68,19 +68,27 @@ const LgWrap = styled.span`
 `;
 
 const Mn = styled.ul`
-  padding: 1.6rem;
+  padding: 0 1.6rem;
+  height: 5.2rem;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   border-top: 1px solid #dee0e9;
   border-bottom: 1px solid #dee0e9;
   > li {
+    flex: 1;
+    margin-right: 0.5rem;
+    height: 100%;
     > a {
       display: flex;
+      height: 100%;
       align-items: center;
-    }
-    &:hover {
-      // background-color:
+      justify-content: center;
+      padding: 0 1.5rem;
+      &:hover {
+        background-color: #e3e4e9;
+      }
+      transition: all 0.2s;
     }
   }
 `;

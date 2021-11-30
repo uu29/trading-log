@@ -63,12 +63,7 @@ const GlobalStyles = (props) => {
           cursor: pointer;
           border-radius: 2px;
         }
-        a:hover,
-        a:active,
-        button:hover,
-        button:active {
-          color: #2d96f6;
-        }
+
         figure {
           margin: 0;
         }
