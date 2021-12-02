@@ -72,7 +72,7 @@ const RightCont = styled.dl`
 
 const Reports = () => {
   return (
-    <div>
+    <section>
       <SearchBar />
       <Index />
       <Grid>
@@ -85,7 +85,7 @@ const Reports = () => {
         ))}
       </Grid>
       <AddBtn />
-    </div>
+    </section>
   );
 };
 

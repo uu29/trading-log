@@ -10,7 +10,7 @@ const data = [
 
 export default function Home() {
   return (
-    <div>
+    <section>
       <SearchBar />
       <ul>
         {data.map((t, i) => (
@@ -27,7 +27,7 @@ export default function Home() {
         ))}
       </ul>
       <AddBtn />
-    </div>
+    </section>
   );
 }
 
