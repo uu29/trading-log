@@ -4,10 +4,14 @@ const Calendar = () => (
   <section>
     <CalLayer>
       <TitleArea>
+        <ControlBtn type="button">10월</ControlBtn>
         <Title>
           2021<span>년</span> 11<span>월</span>
         </Title>
-        <AddBtn type="button">추가</AddBtn>
+        <ControlBtn type="button" isNext>
+          12월
+        </ControlBtn>
+        <AddBtn type="button">일정 추가</AddBtn>
       </TitleArea>
       <Grid className="days__area">
         <div>일</div>
@@ -128,6 +132,7 @@ const Grid = styled.div`
 `;
 
 const CalLayer = styled.div`
+  position: relative;
   background: rgba(255, 255, 255, 0.6);
   margin: 2.4rem 3.2rem;
   border-radius: 2rem;
@@ -138,8 +143,13 @@ const CalLayer = styled.div`
 `;
 
 const TitleArea = styled.div`
-  padding: 1.6rem 2.4rem 0.8rem;
+  padding: 1.8rem 2.4rem 0.8rem;
+  margin-bottom: 1.6rem;
   text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  line-height: 1;
   &::after {
     content: "";
     display: block;
@@ -159,10 +169,35 @@ const Title = styled.h2`
 `;
 
 const AddBtn = styled.button`
-  margin-top: 0.8rem;
-  float: right;
-  color: #48a1f3;
-  font-size: 1.8rem;
+  position: absolute;
+  top: 1.8rem;
+  right: 1.8rem;
+  color: #fff;
+  font-size: 1.6rem;
+  height: 2.8rem;
+  width: 2.8rem;
+  text-indent: -9999px;
+  background: url(/images/ic__plus.svg) no-repeat center;
+  background-size: contain;
+`;
+
+const ControlBtn = styled.button<{ isNext?: boolean }>`
+  padding-top: 2px;
+  margin: 0 1.6rem;
+  font-size: 1.6rem;
+  color: #8f9093;
+  transform: translateY(1px);
+
+  ${({ isNext }) =>
+    isNext
+      ? `
+  background: url(/images/ic__next.svg) no-repeat right;
+  padding-right: 2.4rem;
+  `
+      : `
+  background: url(/images/ic__prev.svg) no-repeat left;
+  padding-left: 2.4rem;
+  `};
 `;
 
 export default Calendar;

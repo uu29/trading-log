@@ -1,51 +1,77 @@
 import styled from "@emotion/styled";
-import { Logo, IcTdLog, IcRep, IcCal } from "svgs";
+import { Logo, IcTdLog, IcRep, IcCal, IcCalActive, IcRepActive, IcTdLogActive } from "svgs";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-const Nav = () => (
-  <Hd>
-    <H1Wrap>
-      <LgWrap>
-        <Logo />
-      </LgWrap>
-      <H1>개미 매매일지</H1>
-    </H1Wrap>
-    <nav>
-      <Mn>
-        <li>
-          <Link href="/">
-            <a>
-              <IcWrap style={{ margin: "-.7rem .4rem 0 0" }}>
-                <IcTdLog />
-              </IcWrap>
-              매매일지
-            </a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/reports">
-            <a>
-              <IcWrap>
-                <IcRep />
-              </IcWrap>
-              종목분석
-            </a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/calendar">
-            <a>
-              <IcWrap>
-                <IcCal />
-              </IcWrap>
-              일정관리
-            </a>
-          </Link>
-        </li>
-      </Mn>
-    </nav>
-  </Hd>
-);
+const mns = [
+  {
+    title: "매매일지",
+    pathname: "/",
+    iconEl: <IcTdLog />,
+    iconElActive: <IcTdLogActive />,
+    iconOption: { style: { margin: "-7px 4px 0 0" } },
+  },
+  { title: "종목분석", pathname: "/reports", iconEl: <IcRep />, iconElActive: <IcRepActive /> },
+  { title: "일정관리", pathname: "/calendar", iconEl: <IcCal />, iconElActive: <IcCalActive /> },
+];
+
+const Nav = () => {
+  const { pathname } = useRouter();
+  return (
+    <Hd>
+      <H1Wrap>
+        <LgWrap>
+          <Logo />
+        </LgWrap>
+        <H1>개미 매매일지</H1>
+      </H1Wrap>
+      <nav>
+        <Mn>
+          {mns.map((menu) => (
+            <li key={menu.title}>
+              <Link href={menu.pathname} passHref>
+                <LinkItem isActive={pathname === menu.pathname}>
+                  <IcWrap {...menu.iconOption}>{pathname === menu.pathname ? menu.iconElActive : menu.iconEl}</IcWrap>
+                  {menu.title}
+                </LinkItem>
+              </Link>
+            </li>
+          ))}
+          {/* <li>
+            <Link href="/" passHref>
+              <LinkItem isActive={pathname === "/"}>
+                <IcWrap style={{ margin: "-.7rem .4rem 0 0" }}>
+                  <IcTdLog />
+                </IcWrap>
+                매매일지
+              </LinkItem>
+            </Link>
+          </li>
+          <li>
+            <Link href="/reports" passHref>
+              <LinkItem isActive={pathname === "/reports"}>
+                <IcWrap>
+                  <IcRep />
+                </IcWrap>
+                종목분석
+              </LinkItem>
+            </Link>
+          </li>
+          <li>
+            <Link href="/calendar" passHref>
+              <LinkItem isActive={pathname === "/calendar"}>
+                <IcWrap>
+                  <IcCal />
+                </IcWrap>
+                일정관리
+              </LinkItem>
+            </Link>
+          </li> */}
+        </Mn>
+      </nav>
+    </Hd>
+  );
+};
 
 const Hd = styled.header`
   text-align: center;
@@ -79,18 +105,20 @@ const Mn = styled.ul`
     flex: 1;
     margin-right: 0.5rem;
     height: 100%;
-    > a {
-      display: flex;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-      padding: 0 1.5rem;
-      &:hover {
-        background-color: #e3e4e9;
-      }
-      transition: all 0.2s;
-    }
   }
+`;
+
+const LinkItem = styled.a<{ isActive: boolean }>`
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
+  &:hover {
+    background-color: #e3e4e9;
+  }
+  ${({ isActive }) => isActive && "color: #2D96F6"};
+  transition: all 0.2s;
 `;
 
 const IcWrap = styled.span`
