@@ -8,7 +8,7 @@ const data = [
   { name: "NIKE", price: 123000, count: 241, date: "2021/12/06" },
 ];
 
-export default function Home() {
+const Home = () => {
   return (
     <section>
       <SearchBar />
@@ -29,7 +29,7 @@ export default function Home() {
       <AddBtn />
     </section>
   );
-}
+};
 
 const List = styled.li`
   margin: 1.6rem;
@@ -61,3 +61,5 @@ const Date = styled.span`
 const ListBottom = styled.div`
   text-align: right;
 `;
+
+export default Home;

@@ -1,11 +1,22 @@
 import styled from "@emotion/styled";
+import useForm from "hooks/useForm";
 
-const SearchBar = () => (
-  <BarWrap>
-    <IcSearch />
-    <input type="text" value="" placeholder="검색하세요" />
-  </BarWrap>
-);
+interface IValue {
+  text: string;
+}
+const initialValue: IValue = { text: "" };
+const onSubmit = (value) => {
+  console.log(value);
+};
+const SearchBar = () => {
+  const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
+  return (
+    <BarWrap>
+      <IcSearch />
+      <input type="text" name="text" value={form.text} placeholder="검색하세요" onChange={handleChange} />
+    </BarWrap>
+  );
+};
 
 const BarWrap = styled.div`
   margin: 1.6rem;
