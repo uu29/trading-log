@@ -1,4 +1,3 @@
-import AddBtn from "components/AddBtn";
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
@@ -52,7 +51,7 @@ const Create = () => {
   const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
   return (
     <FormWrap>
-      <form>
+      <form method="post">
         <Label htmlFor="name">종목 이름</Label>
         <Input type="text" id="name" name="name" value={form.name} onChange={handleChange} className={form_input_style} />
         <Flex>
@@ -95,11 +94,28 @@ const Create = () => {
         </Flex>
         <Label htmlFor="desc">매매 이유</Label>
         <TextArea id="desc" name="desc" rows={5} cols={33} value={form.desc} onChange={handleChange} className={form_input_style} />
-        <AddBtn />
+        <SubmitBtn>작성하기</SubmitBtn>
       </form>
     </FormWrap>
   );
 };
+
+const SubmitBtn = styled.button`
+  margin-top: 1.6rem;
+  display: block;
+  width: 100%;
+  height: 6rem;
+  font-size: 1.8rem;
+  border-radius: 0.8rem;
+  background: #2d96f6;
+  color: #fff;
+  text-align: center;
+  transition: all 0.2s;
+  box-shadow: 0 0 4rem -2rem rgba(0, 0, 0, 0.15);
+  &:hover {
+    background: #238cee;
+  }
+`;
 
 const Label = styled.label`
   display: inline-block;
@@ -109,7 +125,7 @@ const Label = styled.label`
 `;
 
 const FormWrap = styled.div`
-  margin: 2rem;
+  margin: 0 2rem 1.6rem;
 `;
 
 const Input = styled.input`
