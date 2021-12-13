@@ -1,35 +1,84 @@
+import { useState, useEffect } from "react";
+import { firebaseApp } from "firebase.config";
+import { getFirestore, collection, getDocs, Timestamp } from "firebase/firestore";
 import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
-import AddBtn from "components/AddBtn";
+import Link from "next/link";
+const db = getFirestore(firebaseApp);
 
-const data = [
-  { name: "삼성전자", price: 71000, count: 70, date: "2021/11/16" },
-  { name: "S&P 500", price: 183500, count: 10, date: "2021/08/16" },
-  { name: "NIKE", price: 123000, count: 241, date: "2021/12/06" },
-];
+interface TradingDailyLog {
+  currency: string;
+  description: string;
+  reg_date: Timestamp;
+  price: number;
+  stock_amount: number;
+  stock_name: string;
+  trading_date: Date;
+  trading_type: string;
+}
+
+const getData = async (db) => {
+  const col = collection(db, "user_trading_daily");
+  const snapshot = await getDocs(col);
+  const list = await snapshot.docs.map((doc) => doc.data());
+  return list as TradingDailyLog[];
+};
 
 const Home = () => {
+  const [error, setError] = useState();
+  const [data, setData] = useState<TradingDailyLog[]>([]);
+
+  useEffect(() => {
+    getData(db)
+      .then((res) => setData(res))
+      .catch((err) => setError(err));
+  }, []);
+
   return (
     <section>
       <SearchBar />
       <ul>
         {data.map((t, i) => (
           <List key={i}>
-            <h2>{t.name}</h2>
+            <h2>{t.stock_name}</h2>
             <ListBottom>
               <Price>{t.price}</Price>
               <span>
-                <strong>{t.count}</strong>주
+                <strong>{t.stock_amount}</strong>주
               </span>
-              <Date>{t.date}</Date>
+              <Date>{t.reg_date.toDate().toDateString()}</Date>
             </ListBottom>
           </List>
         ))}
       </ul>
-      <AddBtn />
+      <Link href="/create" passHref>
+        <StyledA>작성하기</StyledA>
+      </Link>
     </section>
   );
 };
+
+const StyledA = styled.a`
+  margin: 1.6rem;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  width: calc(100% - 3.2rem);
+  display: block;
+  height: 6rem;
+  line-height: 6rem;
+  font-size: 1.8rem;
+  border-radius: 0.8rem;
+  background: #2d96f6;
+  color: #fff;
+  text-align: center;
+  transition: all 0.2s;
+  box-shadow: 0 0 4rem -2rem rgba(0, 0, 0, 0.15);
+  &:hover {
+    background: #238cee;
+  }
+`;
 
 const List = styled.li`
   margin: 1.6rem;
