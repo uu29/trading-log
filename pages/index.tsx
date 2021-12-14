@@ -17,11 +17,19 @@ interface TradingDailyLog {
   trading_type: string;
 }
 
-const getData = async (db) => {
+const fetchData = async (db) => {
   const col = collection(db, "user_trading_daily");
   const snapshot = await getDocs(col);
   const list = await snapshot.docs.map((doc) => doc.data());
   return list as TradingDailyLog[];
+};
+
+const getDate = (date: Timestamp): string => {
+  const t = date.toDate();
+  const y = t.getFullYear();
+  const m = t.getMonth() + 1;
+  const dd = t.getDate();
+  return `${y}/${m}/${dd}`;
 };
 
 const Home = () => {
@@ -29,7 +37,7 @@ const Home = () => {
   const [data, setData] = useState<TradingDailyLog[]>([]);
 
   useEffect(() => {
-    getData(db)
+    fetchData(db)
       .then((res) => setData(res))
       .catch((err) => setError(err));
   }, []);
@@ -46,7 +54,7 @@ const Home = () => {
               <span>
                 <strong>{t.stock_amount}</strong>주
               </span>
-              <Date>{t.reg_date.toDate().toDateString()}</Date>
+              <Date>{getDate(t.reg_date)}</Date>
             </ListBottom>
           </List>
         ))}

@@ -37,36 +37,6 @@ const Nav = () => {
               </Link>
             </li>
           ))}
-          {/* <li>
-            <Link href="/" passHref>
-              <LinkItem isActive={pathname === "/"}>
-                <IcWrap style={{ margin: "-.7rem .4rem 0 0" }}>
-                  <IcTdLog />
-                </IcWrap>
-                매매일지
-              </LinkItem>
-            </Link>
-          </li>
-          <li>
-            <Link href="/reports" passHref>
-              <LinkItem isActive={pathname === "/reports"}>
-                <IcWrap>
-                  <IcRep />
-                </IcWrap>
-                종목분석
-              </LinkItem>
-            </Link>
-          </li>
-          <li>
-            <Link href="/calendar" passHref>
-              <LinkItem isActive={pathname === "/calendar"}>
-                <IcWrap>
-                  <IcCal />
-                </IcWrap>
-                일정관리
-              </LinkItem>
-            </Link>
-          </li> */}
         </Mn>
       </nav>
     </Hd>
