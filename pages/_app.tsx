@@ -8,7 +8,7 @@ function App({ Component, pageProps }: AppProps) {
     <>
       <GlobalStyles />
       <RspWrap>
-        <Nav />
+        {!pageProps.hideNav && <Nav />}
         <Component {...pageProps} />
       </RspWrap>
     </>
