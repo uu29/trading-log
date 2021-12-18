@@ -43,7 +43,7 @@ const IcSearch = styled.div`
   margin: 0 0.8rem;
   width: 2.8rem;
   height: 2.8rem;
-  background: url(/images/ic__search.svg) no-repeat center;
+  background: url(/images/ico__search.svg) no-repeat center;
   background-size: contain;
 `;
 

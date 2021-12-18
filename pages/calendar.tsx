@@ -72,7 +72,9 @@ const AlrtBtn = styled.button<{ isAlrtOn?: boolean }>`
   float: right;
   text-indent: -9999px;
   ${({ isAlrtOn }) =>
-    isAlrtOn ? `background: url(/images/ic__alrt_on.svg) no-repeat center` : `background: url(/images/ic__alrt_off.svg) no-repeat center`};
+    isAlrtOn
+      ? `background: url(/images/ico__alrt_on.svg) no-repeat center`
+      : `background: url(/images/ico__alrt_off.svg) no-repeat center`};
   width: 3.2rem;
   height: 3.2rem;
 `;
@@ -177,7 +179,7 @@ const AddBtn = styled.button`
   height: 2.8rem;
   width: 2.8rem;
   text-indent: -9999px;
-  background: url(/images/ic__plus.svg) no-repeat center;
+  background: url(/images/ico__plus.svg) no-repeat center;
   background-size: contain;
 `;
 
@@ -191,11 +193,11 @@ const ControlBtn = styled.button<{ isNext?: boolean }>`
   ${({ isNext }) =>
     isNext
       ? `
-  background: url(/images/ic__next.svg) no-repeat right;
+  background: url(/images/ico__next.svg) no-repeat right;
   padding-right: 2.4rem;
   `
       : `
-  background: url(/images/ic__prev.svg) no-repeat left;
+  background: url(/images/ico__prev.svg) no-repeat left;
   padding-left: 2.4rem;
   `};
 `;
