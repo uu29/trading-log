@@ -35,3 +35,6 @@ yarn-error.log*
 
 # firebase config
 firebase.config.js
+
+# .env
+.env.development

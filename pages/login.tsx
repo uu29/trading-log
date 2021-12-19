@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import { Logo } from "svgs";
 import Image from "next/image";
+import { GoogleLogin } from "react-google-login";
 
 const btn__google = css`
   background: #fff;
@@ -42,13 +43,33 @@ const login__logo = css`
 `;
 
 const GoogleBtn = () => {
+  const responseGoogle = (response) => {
+    console.log("[response]");
+    console.log(response);
+  };
+
+  const failureGoogle = ({ error, details }) => {
+    console.log("[failure]");
+    console.log(error);
+    console.log(details);
+  };
+
   return (
-    <button type="button" className={cx(login__btn, btn__google)}>
-      <span className={login__logo}>
-        <Image src="/images/logo__google.svg" alt="google logo" width={18} height={18} />
-      </span>
-      구글로 로그인
-    </button>
+    <GoogleLogin
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_OAUTH_KEY}
+      render={(renderProps) => (
+        <button type="button" className={cx(login__btn, btn__google)} onClick={renderProps.onClick} disabled={renderProps.disabled}>
+          <span className={login__logo}>
+            <Image src="/images/logo__google.svg" alt="google logo" width={18} height={18} />
+          </span>
+          구글로 로그인
+        </button>
+      )}
+      buttonText="Login"
+      onSuccess={responseGoogle}
+      onFailure={failureGoogle}
+      cookiePolicy={"single_host_origin"}
+    />
   );
 };
 
