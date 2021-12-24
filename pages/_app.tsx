@@ -10,6 +10,7 @@ function App({ Component, pageProps }: AppProps) {
       <RspWrap>
         {!pageProps.hideNav && <Nav />}
         <Component {...pageProps} />
+        <div id="modal"></div>
       </RspWrap>
     </>
   );
