@@ -111,6 +111,18 @@ const GlobalStyles = (props) => {
           font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "맑은 고딕", "Malgun Gothic", sans-serif;
           color: #3b3e4a;
         }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        /* Firefox */
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
       `}
     />
   );

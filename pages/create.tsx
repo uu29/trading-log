@@ -258,6 +258,7 @@ const InputDate = styled.input`
 `;
 
 const SalesOptions = styled.div<{ salesType: SalesType }>`
+  height: 6rem;
   color: ${({ salesType }) => (salesType === SalesType.sell ? "#F02828" : "#0778DF")};
 `;
 
