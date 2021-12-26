@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import AddBtn from "components/AddBtn";
-import { IcDollar, IcWon } from "svgs";
+import { IconDollar, IconWon } from "svgs";
 
 const data = [
   { title: "삼성전자", reg_date: "2021.11.16 16:33:33", text: "Lorem Ipsum is simply dummy test" },
@@ -22,13 +22,13 @@ const Index = () => {
         <dt>
           <IcWrap>
             원/달러 환율
-            <IcDollar />
+            <IconDollar />
           </IcWrap>
         </dt>
         <dd>
           <IcWrap>
             1181.50
-            <IcWon />
+            <IconWon />
           </IcWrap>
         </dd>
       </RightCont>

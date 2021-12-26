@@ -1,5 +1,6 @@
+import { useMemo } from "react";
 import styled from "@emotion/styled";
-import { Logo, IcTdLog, IcRep, IcCal, IcCalActive, IcRepActive, IcTdLogActive } from "svgs";
+import { Logo, IconTdLog, IconRep, IconCal, IconCalActive, IconPortfolio, IconPortfolioActive, IconRepActive, IconTdLogActive } from "svgs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -7,16 +8,19 @@ const mns = [
   {
     title: "매매일지",
     pathname: "/",
-    iconEl: <IcTdLog />,
-    iconElActive: <IcTdLogActive />,
+    iconEl: <IconTdLog />,
+    iconElActive: <IconTdLogActive />,
     iconOption: { style: { margin: "-7px 4px 0 0" } },
   },
-  { title: "종목분석", pathname: "/reports", iconEl: <IcRep />, iconElActive: <IcRepActive /> },
-  { title: "일정관리", pathname: "/calendar", iconEl: <IcCal />, iconElActive: <IcCalActive /> },
+  { title: "종목분석", pathname: "/reports", iconEl: <IconRep />, iconElActive: <IconRepActive /> },
+  { title: "포트폴리오", pathname: "/portfolio", iconEl: <IconPortfolio />, iconElActive: <IconPortfolioActive /> },
+  { title: "일정관리", pathname: "/calendar", iconEl: <IconCal />, iconElActive: <IconCalActive /> },
 ];
 
 const Nav = () => {
   const { pathname } = useRouter();
+  const nowPath = useMemo(() => pathname.split("/")[1], [pathname]);
+  const isActive = (path: string): boolean => path.split("/")[1] === nowPath;
   return (
     <Hd>
       <H1Wrap>
@@ -30,8 +34,8 @@ const Nav = () => {
           {mns.map((menu) => (
             <li key={menu.title}>
               <Link href={menu.pathname} passHref>
-                <LinkItem isActive={pathname === menu.pathname}>
-                  <IcWrap {...menu.iconOption}>{pathname === menu.pathname ? menu.iconElActive : menu.iconEl}</IcWrap>
+                <LinkItem isActive={isActive(menu.pathname)}>
+                  <IconWrap {...menu.iconOption}>{isActive(menu.pathname) ? menu.iconElActive : menu.iconEl}</IconWrap>
                   {menu.title}
                 </LinkItem>
               </Link>
@@ -91,7 +95,7 @@ const LinkItem = styled.a<{ isActive: boolean }>`
   transition: all 0.2s;
 `;
 
-const IcWrap = styled.span`
+const IconWrap = styled.span`
   margin-right: 0.8rem;
 `;
 
