@@ -14,7 +14,10 @@ const getYM = (year, month) => {
 };
 
 // 이번 달의 말일 구하는 함수
-const getLastDate = (year, month) => new Date(year, month + 1, 0).getDate();
+const getLastDate = (year, month) => {
+  console.log("month: ", month);
+  return new Date(year, month + 1, 0).getDate();
+};
 
 const useCalendar = () => {
   const [currMonth, setCurrMonth] = useState(new Date().getMonth());
@@ -25,6 +28,7 @@ const useCalendar = () => {
   const [prevLastDate, setPrevLastDate] = useState(0);
   const [lastDate, setLastDate] = useState(0);
   const [firstDay, setFirstDay] = useState(0);
+  const [lastDay, setlastDay] = useState(0);
 
   const setPrevMonth = (prev) => {
     if (currMonth > 0) setCurrMonth(currMonth - 1);
@@ -33,6 +37,7 @@ const useCalendar = () => {
       setCurrYear(currYear - 1);
     }
   };
+
   const setNextMonth = () => {
     if (currMonth < 11) setCurrMonth(currMonth + 1);
     else {
@@ -41,19 +46,26 @@ const useCalendar = () => {
     }
   };
 
+  const getDay = (year: number, month: number, date: number) => {
+    let now = new Date(year, month - 1, date);
+    return now.getDay();
+  };
+
   useEffect(() => {
     const first_day = new Date(currYear, currMonth, 1).getDay();
+    const last_day = getLastDate(currYear, currMonth);
     const prevYM = getYM(currYear, currMonth - 1);
     const currYM = getYM(currYear, currMonth);
     const nextYM = getYM(currYear, currMonth + 1);
     setPrevYM(prevYM);
     setCurrYM(currYM);
     setNextYM(nextYM);
-    setPrevLastDate(getLastDate(prevYM[0], prevYM[1]));
     setLastDate(getLastDate(currYear, currMonth));
+    setPrevLastDate(getLastDate(prevYM[0], prevYM[1]));
     setFirstDay(first_day);
+    setlastDay(last_day);
   }, [currMonth, currYear]);
 
-  return { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, setPrevMonth, setNextMonth };
+  return { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay };
 };
 export default useCalendar;

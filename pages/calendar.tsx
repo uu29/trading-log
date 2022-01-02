@@ -1,46 +1,64 @@
 import styled from "@emotion/styled";
+import { cx, css } from "@emotion/css";
 import useCalendar from "hooks/useCalendar";
 
 const Calendar = () => {
-  const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, setPrevMonth, setNextMonth } = useCalendar();
+  const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
 
   return (
     <section>
       <CalLayer>
         <TitleArea>
-          <ControlBtn type="button" onClick={setPrevMonth}>
-            {prevYM[1]}월
-          </ControlBtn>
+          <ControlBtn type="button" onClick={setPrevMonth} />
           <Title>
             {currYM[0]}
-            <span>년</span> {currYM[1]}
-            <span>월</span>
+            <span className="text">년 </span>
+            {currYM[1]}
+            <span className="text">월</span>
           </Title>
-          <ControlBtn type="button" onClick={setNextMonth} isNext>
-            {nextYM[1]}월
-          </ControlBtn>
+          <ControlBtn type="button" onClick={setNextMonth} isNext />
           <AddBtn type="button">일정 추가</AddBtn>
         </TitleArea>
-        <Grid className="days__area">
-          <div>일</div>
-          <div>월</div>
-          <div>화</div>
-          <div>수</div>
-          <div>목</div>
-          <div>금</div>
-          <div>토</div>
+        <Grid>
+          <Date className={cx(top__weekend, top__day)}>일</Date>
+          <Date className={top__day}>월</Date>
+          <Date className={top__day}>화</Date>
+          <Date className={top__day}>수</Date>
+          <Date className={top__day}>목</Date>
+          <Date className={top__day}>금</Date>
+          <Date className={cx(top__weekend, top__day)}>토</Date>
         </Grid>
         <Grid>
-          {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((d) => (
-            <div className="prev-month-dates" key={d}>
+          {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((d, idx) => (
+            <Date
+              className={extra__day}
+              key={d}
+              data-set-date={d}
+              data-set-year={prevYM[0]}
+              data-set-month={prevYM[1]}
+              day={getDay(prevYM[0], prevYM[1], d)}
+            >
               {d}
-            </div>
+            </Date>
           ))}
-          {Array.from({ length: lastDate }, (v, i) => i + 1).map((d) => (
-            <div className="dates" key={d}>
+          {Array.from({ length: lastDate }, (v, i) => i + 1).map((d, idx) => (
+            <Date key={d} data-set-date={d} data-set-year={currYM[0]} data-set-month={currYM[1]} day={getDay(currYM[0], currYM[1], d)}>
               {d === 1 && `${currYM[1]}/`}
               {d}
-            </div>
+            </Date>
+          ))}
+          {Array.from({ length: 6 - lastDay }, (v, i) => i + 1).map((d) => (
+            <Date
+              className={extra__day}
+              key={d}
+              data-set-date={d}
+              data-set-year={nextYM[0]}
+              data-set-month={nextYM[1]}
+              day={getDay(nextYM[0], nextYM[1], d)}
+            >
+              {d === 1 && `${nextYM[1]}/`}
+              {d}
+            </Date>
           ))}
         </Grid>
       </CalLayer>
@@ -133,43 +151,54 @@ const Monthly = styled.ul`
   }
 `;
 
+const top__day = css`
+  height: auto;
+  padding-bottom: 0.5rem;
+  font-size: 1.8rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-top: 0 none;
+  border-bottom: 2px solid #dee0e9;
+`;
+
+const top__weekend = css`
+  color: #888da1;
+`;
+
+const extra__day = css`
+  color: #bbb;
+`;
+
+const Date = styled.div<{ day?: number }>`
+  margin-top: -1px;
+  padding: 0.8rem 1.2rem 1rem;
+  height: 7rem;
+  font-size: 2rem;
+  border-top: 1px solid #dee0e9;
+  ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
+`;
+
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  padding: 0 3.2rem;
-  > div {
-    padding: 0.3rem 0 1rem;
-    font-size: 1.8rem;
-    text-align: center;
-  }
-  .dates {
-    height: 5.6rem;
-    font-size: 2rem;
-  }
-  .prev-month-dates {
-    color: #bbb;
-  }
+  text-align: right;
 `;
 
 const CalLayer = styled.div`
   position: relative;
   background: rgba(255, 255, 255, 0.6);
   margin: 2.4rem 3.2rem;
+  overflow: hidden;
   border-radius: 2rem;
-  > .days__area {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #dee0e9;
-  }
 `;
 
 const TitleArea = styled.div`
-  padding: 1.8rem 2.4rem 0.8rem;
-  margin-bottom: 1.6rem;
+  padding: 1.8rem 2.4rem 2rem;
   text-align: center;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   line-height: 1;
+  background: rgba(255, 255, 255, 0.9);
   &::after {
     content: "";
     display: block;
@@ -178,11 +207,12 @@ const TitleArea = styled.div`
 `;
 
 const Title = styled.h2`
+  width: 18rem;
   display: inline-block;
   font-size: 2.4rem;
   font-weight: 600;
 
-  > span {
+  .text {
     font-weight: 500;
     font-size: 2rem;
   }
@@ -202,8 +232,9 @@ const AddBtn = styled.button`
 `;
 
 const ControlBtn = styled.button<{ isNext?: boolean }>`
+  width: 2rem;
+  height: 2.4rem;
   padding-top: 2px;
-  margin: 0 1.6rem;
   font-size: 1.6rem;
   color: #8f9093;
   transform: translateY(1px);
