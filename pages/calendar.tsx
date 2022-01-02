@@ -1,71 +1,83 @@
 import styled from "@emotion/styled";
+import useCalendar from "hooks/useCalendar";
 
-const Calendar = () => (
-  <section>
-    <CalLayer>
-      <TitleArea>
-        <ControlBtn type="button">10월</ControlBtn>
-        <Title>
-          2021<span>년</span> 11<span>월</span>
-        </Title>
-        <ControlBtn type="button" isNext>
-          12월
-        </ControlBtn>
-        <AddBtn type="button">일정 추가</AddBtn>
-      </TitleArea>
-      <Grid className="days__area">
-        <div>일</div>
-        <div>월</div>
-        <div>화</div>
-        <div>수</div>
-        <div>목</div>
-        <div>금</div>
-        <div>토</div>
-      </Grid>
-      <Grid>
-        {Array.from({ length: 30 }, (v, i) => i + 1).map((d) => (
-          <div className="dates" key={d}>
-            {d}
-          </div>
-        ))}
-      </Grid>
-    </CalLayer>
-    <Monthly>
-      <li>
-        <strong>
-          16 <span>화</span>
-        </strong>
-        <Daily>
-          <li>
-            <Time>12:00</Time>
-            테슬라 실적 발표
-            <AlrtBtn type="button" isAlrtOn>
-              알람 켜짐
-            </AlrtBtn>
-          </li>
-          <li>
-            <Time>16:00</Time>
-            닌텐도 신작 공개
-            <AlrtBtn type="button">알람 꺼짐</AlrtBtn>
-          </li>
-        </Daily>
-      </li>
-      <li>
-        <strong>
-          25 <span>목</span>
-        </strong>
-        <Daily>
-          <li>
-            엔비디아 실적 발표
-            <AlrtBtn type="button" isAlrtOn>
-              알람 꺼짐
-            </AlrtBtn>
-          </li>
-        </Daily>
-      </li>
-    </Monthly>
-  </section>
-);
+const Calendar = () => {
+  const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay } = useCalendar();
+
+  return (
+    <section>
+      <CalLayer>
+        <TitleArea>
+          <ControlBtn type="button">{prevYM[1]}월</ControlBtn>
+          <Title>
+            {currYM[0]}
+            <span>년</span> {currYM[1]}
+            <span>월</span>
+          </Title>
+          <ControlBtn type="button" isNext>
+            {nextYM[1]}월
+          </ControlBtn>
+          <AddBtn type="button">일정 추가</AddBtn>
+        </TitleArea>
+        <Grid className="days__area">
+          <div>일</div>
+          <div>월</div>
+          <div>화</div>
+          <div>수</div>
+          <div>목</div>
+          <div>금</div>
+          <div>토</div>
+        </Grid>
+        <Grid>
+          {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((d) => (
+            <div className="prev-month-dates" key={d}>
+              {d}
+            </div>
+          ))}
+          {Array.from({ length: lastDate }, (v, i) => i + 1).map((d) => (
+            <div className="dates" key={d}>
+              {d}
+            </div>
+          ))}
+        </Grid>
+      </CalLayer>
+      <Monthly>
+        <li>
+          <strong>
+            16 <span>화</span>
+          </strong>
+          <Daily>
+            <li>
+              <Time>12:00</Time>
+              테슬라 실적 발표
+              <AlrtBtn type="button" isAlrtOn>
+                알람 켜짐
+              </AlrtBtn>
+            </li>
+            <li>
+              <Time>16:00</Time>
+              닌텐도 신작 공개
+              <AlrtBtn type="button">알람 꺼짐</AlrtBtn>
+            </li>
+          </Daily>
+        </li>
+        <li>
+          <strong>
+            25 <span>목</span>
+          </strong>
+          <Daily>
+            <li>
+              엔비디아 실적 발표
+              <AlrtBtn type="button" isAlrtOn>
+                알람 꺼짐
+              </AlrtBtn>
+            </li>
+          </Daily>
+        </li>
+      </Monthly>
+    </section>
+  );
+};
 
 const AlrtBtn = styled.button<{ isAlrtOn?: boolean }>`
   margin-top: -0.4rem;
@@ -130,6 +142,9 @@ const Grid = styled.div`
   .dates {
     height: 5.6rem;
     font-size: 2rem;
+  }
+  .prev-month-dates {
+    color: #bbb;
   }
 `;
 
