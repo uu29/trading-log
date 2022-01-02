@@ -2,19 +2,21 @@ import styled from "@emotion/styled";
 import useCalendar from "hooks/useCalendar";
 
 const Calendar = () => {
-  const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay } = useCalendar();
+  const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, setPrevMonth, setNextMonth } = useCalendar();
 
   return (
     <section>
       <CalLayer>
         <TitleArea>
-          <ControlBtn type="button">{prevYM[1]}월</ControlBtn>
+          <ControlBtn type="button" onClick={setPrevMonth}>
+            {prevYM[1]}월
+          </ControlBtn>
           <Title>
             {currYM[0]}
             <span>년</span> {currYM[1]}
             <span>월</span>
           </Title>
-          <ControlBtn type="button" isNext>
+          <ControlBtn type="button" onClick={setNextMonth} isNext>
             {nextYM[1]}월
           </ControlBtn>
           <AddBtn type="button">일정 추가</AddBtn>
@@ -36,6 +38,7 @@ const Calendar = () => {
           ))}
           {Array.from({ length: lastDate }, (v, i) => i + 1).map((d) => (
             <div className="dates" key={d}>
+              {d === 1 && `${currYM[1]}/`}
               {d}
             </div>
           ))}
