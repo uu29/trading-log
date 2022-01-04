@@ -3,9 +3,9 @@ import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import useCalendar from "hooks/useCalendar";
 import { UserCalendar } from "interface";
-const calendar_collection = "user_calendar";
 import { where, Timestamp } from "@firebase/firestore";
 import { fetchQueryData } from "core/firestore";
+const calendar_collection = "user_calendar";
 
 const Calendar = () => {
   const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
@@ -14,10 +14,12 @@ const Calendar = () => {
   const [data, setData] = useState<UserCalendar[]>([]);
 
   useEffect(() => {
-    fetchQueryData<UserCalendar>(calendar_collection, where("alert", "==", true))
+    const startTime = Timestamp.fromDate(new Date(currYM[0], currYM[1] - 1, 1));
+    const lastTime = Timestamp.fromDate(new Date(currYM[0], currYM[1] - 1, lastDate));
+    fetchQueryData<UserCalendar>(calendar_collection, [where("d_time", ">=", startTime), where("d_time", "<=", lastTime)])
       .then((res) => setData(res))
       .catch((err) => setError(err));
-  }, []);
+  }, [currYM, lastDate]);
 
   return (
     <section>
@@ -34,17 +36,17 @@ const Calendar = () => {
           <AddBtn type="button">일정 추가</AddBtn>
         </TitleArea>
         <Grid>
-          <Date className={cx(top__weekend, top__day)}>일</Date>
-          <Date className={top__day}>월</Date>
-          <Date className={top__day}>화</Date>
-          <Date className={top__day}>수</Date>
-          <Date className={top__day}>목</Date>
-          <Date className={top__day}>금</Date>
-          <Date className={cx(top__weekend, top__day)}>토</Date>
+          <DateArea className={cx(top__weekend, top__day)}>일</DateArea>
+          <DateArea className={top__day}>월</DateArea>
+          <DateArea className={top__day}>화</DateArea>
+          <DateArea className={top__day}>수</DateArea>
+          <DateArea className={top__day}>목</DateArea>
+          <DateArea className={top__day}>금</DateArea>
+          <DateArea className={cx(top__weekend, top__day)}>토</DateArea>
         </Grid>
         <Grid>
           {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((d, idx) => (
-            <Date
+            <DateArea
               className={extra__day}
               key={d}
               data-set-date={d}
@@ -53,16 +55,16 @@ const Calendar = () => {
               day={getDay(prevYM[0], prevYM[1], d)}
             >
               {d}
-            </Date>
+            </DateArea>
           ))}
           {Array.from({ length: lastDate }, (v, i) => i + 1).map((d, idx) => (
-            <Date key={d} data-set-date={d} data-set-year={currYM[0]} data-set-month={currYM[1]} day={getDay(currYM[0], currYM[1], d)}>
+            <DateArea key={d} data-set-date={d} data-set-year={currYM[0]} data-set-month={currYM[1]} day={getDay(currYM[0], currYM[1], d)}>
               {d === 1 && `${currYM[1]}/`}
               {d}
-            </Date>
+            </DateArea>
           ))}
           {Array.from({ length: 6 - lastDay }, (v, i) => i + 1).map((d) => (
-            <Date
+            <DateArea
               className={extra__day}
               key={d}
               data-set-date={d}
@@ -72,7 +74,7 @@ const Calendar = () => {
             >
               {d === 1 && `${nextYM[1]}/`}
               {d}
-            </Date>
+            </DateArea>
           ))}
         </Grid>
       </CalLayer>
@@ -182,7 +184,7 @@ const extra__day = css`
   color: #bbb;
 `;
 
-const Date = styled.div<{ day?: number }>`
+const DateArea = styled.div<{ day?: number }>`
   margin-top: -1px;
   padding: 0.8rem 1.2rem 1rem;
   height: 7rem;
