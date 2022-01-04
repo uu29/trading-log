@@ -7,17 +7,30 @@ import { where, Timestamp } from "@firebase/firestore";
 import { fetchQueryData } from "core/firestore";
 const calendar_collection = "user_calendar";
 
+type TCalendarMap = Map<number, UserCalendar[]>;
+
 const Calendar = () => {
   const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
 
   const [error, setError] = useState();
   const [data, setData] = useState<UserCalendar[]>([]);
+  const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, UserCalendar[]>());
 
   useEffect(() => {
     const startTime = Timestamp.fromDate(new Date(currYM[0], currYM[1] - 1, 1));
     const lastTime = Timestamp.fromDate(new Date(currYM[0], currYM[1] - 1, lastDate));
     fetchQueryData<UserCalendar>(calendar_collection, [where("d_time", ">=", startTime), where("d_time", "<=", lastTime)])
-      .then((res) => setData(res))
+      .then((res) => {
+        const map = new Map<number, UserCalendar[]>();
+        res.forEach((curr) => {
+          const curr_date = curr.d_time.toDate().getDate();
+          if (map.has(curr_date)) {
+            map.set(curr_date, [...map.get(curr_date), curr]);
+          } else map.set(curr_date, [curr]);
+        });
+        setCalendarMap(map);
+        setData(res);
+      })
       .catch((err) => setError(err));
   }, [currYM, lastDate]);
 
@@ -54,13 +67,16 @@ const Calendar = () => {
               data-set-month={prevYM[1]}
               day={getDay(prevYM[0], prevYM[1], d)}
             >
-              {d}
+              <div className={item__number}>{d}</div>
             </DateArea>
           ))}
           {Array.from({ length: lastDate }, (v, i) => i + 1).map((d, idx) => (
             <DateArea key={d} data-set-date={d} data-set-year={currYM[0]} data-set-month={currYM[1]} day={getDay(currYM[0], currYM[1], d)}>
-              {d === 1 && `${currYM[1]}/`}
-              {d}
+              <div className={item__number}>
+                {d === 1 && `${currYM[1]}/`}
+                {d}
+              </div>
+              {calendarMap.has(d) && <Dot />}
             </DateArea>
           ))}
           {Array.from({ length: 6 - lastDay }, (v, i) => i + 1).map((d) => (
@@ -72,8 +88,10 @@ const Calendar = () => {
               data-set-month={nextYM[1]}
               day={getDay(nextYM[0], nextYM[1], d)}
             >
-              {d === 1 && `${nextYM[1]}/`}
-              {d}
+              <div className={item__number}>
+                {d === 1 && `${nextYM[1]}/`}
+                {d}
+              </div>
             </DateArea>
           ))}
         </Grid>
@@ -115,6 +133,14 @@ const Calendar = () => {
     </section>
   );
 };
+
+const Dot = styled.span`
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  background: #2d96f6;
+  border-radius: 50%;
+`;
 
 const AlrtBtn = styled.button<{ isAlrtOn?: boolean }>`
   margin-top: -0.4rem;
@@ -169,6 +195,7 @@ const Monthly = styled.ul`
 
 const top__day = css`
   height: auto;
+  padding-left: 1rem;
   padding-bottom: 0.5rem;
   font-size: 1.8rem;
   background: rgba(255, 255, 255, 0.8);
@@ -184,9 +211,15 @@ const extra__day = css`
   color: #bbb;
 `;
 
+const item__number = css`
+  margin: 0.5rem 0.8rem 0.5rem 1rem;
+  float: left;
+  font-size: inherit;
+  line-height: 1.3;
+`;
+
 const DateArea = styled.div<{ day?: number }>`
   margin-top: -1px;
-  padding: 0.8rem 1.2rem 1rem;
   height: 7rem;
   font-size: 2rem;
   border-top: 1px solid #dee0e9;
@@ -196,7 +229,6 @@ const DateArea = styled.div<{ day?: number }>`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  text-align: right;
 `;
 
 const CalLayer = styled.div`

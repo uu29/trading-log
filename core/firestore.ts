@@ -11,7 +11,6 @@ export const fetchData = async <T>(colName: string) => {
 
 export const fetchQueryData = async <T>(colName: string, wheres: QueryConstraint[]) => {
   const q = query(collection(db, colName), ...wheres);
-  console.log(q);
   const querySnapshot = await getDocs(q);
   const list = await querySnapshot.docs.map((doc) => doc.data());
   return list as T[];
