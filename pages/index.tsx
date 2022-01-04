@@ -1,43 +1,17 @@
 import { useState, useEffect } from "react";
-import { firebaseApp } from "firebase.config";
-import { getFirestore, collection, getDocs, Timestamp } from "firebase/firestore";
 import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import Link from "next/link";
-const db = getFirestore(firebaseApp);
-
-interface TradingDailyLog {
-  currency: string;
-  description: string;
-  reg_date: Timestamp;
-  price: number;
-  stock_amount: number;
-  stock_name: string;
-  trading_date: Date;
-  trading_type: string;
-}
-
-const fetchData = async (db) => {
-  const col = collection(db, "user_trading_daily");
-  const snapshot = await getDocs(col);
-  const list = await snapshot.docs.map((doc) => doc.data());
-  return list as TradingDailyLog[];
-};
-
-const getDate = (date: Timestamp): string => {
-  const t = date.toDate();
-  const y = t.getFullYear();
-  const m = t.getMonth() + 1;
-  const dd = t.getDate();
-  return `${y}/${m}/${dd}`;
-};
+import { fetchData, getDate } from "core/firestore";
+import { TradingDailyLog } from "interface";
+const trading_collection = "user_trading_daily";
 
 const Home = () => {
   const [error, setError] = useState();
   const [data, setData] = useState<TradingDailyLog[]>([]);
 
   useEffect(() => {
-    fetchData(db)
+    fetchData<TradingDailyLog>(trading_collection)
       .then((res) => setData(res))
       .catch((err) => setError(err));
   }, []);

@@ -1,9 +1,23 @@
+import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import useCalendar from "hooks/useCalendar";
+import { UserCalendar } from "interface";
+const calendar_collection = "user_calendar";
+import { where, Timestamp } from "@firebase/firestore";
+import { fetchQueryData } from "core/firestore";
 
 const Calendar = () => {
   const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
+
+  const [error, setError] = useState();
+  const [data, setData] = useState<UserCalendar[]>([]);
+
+  useEffect(() => {
+    fetchQueryData<UserCalendar>(calendar_collection, where("alert", "==", true))
+      .then((res) => setData(res))
+      .catch((err) => setError(err));
+  }, []);
 
   return (
     <section>
