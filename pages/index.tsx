@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import Link from "next/link";
-import { fetchData, getDate } from "core/firestore";
+import { fetchData, getDateStrFromTimestamp } from "core/firestore";
 import { ITradingDailyLog } from "interface";
 const trading_collection = "user_trading_daily";
 
@@ -28,7 +28,7 @@ const Home = () => {
               <span>
                 <strong>{t.stock_amount}</strong>주
               </span>
-              <Date>{getDate(t.reg_date)}</Date>
+              <Date>{getDateStrFromTimestamp(t.reg_date)}</Date>
             </ListBottom>
           </List>
         ))}

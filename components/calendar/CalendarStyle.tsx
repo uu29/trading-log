@@ -4,32 +4,35 @@ import { ellipsis } from "styles/StyleLib";
 
 export const colors = ["#314BDB", "#F59A2F", "#FCF208", "#14BF58", "#4CB8F5"];
 
-export const Label = styled.div<{ bgColor }>`
-  display: inline-block;
+export const Label = styled.div<{ bgColor: string; extraDay?: boolean }>`
   margin-top: 0.9rem;
-  padding: 2px 3px;
+  margin-right: 5px;
+  padding: 2px 4px;
   border-radius: 2px;
   line-height: 1.3;
   font-size: 1.1rem;
   background-color: ${({ bgColor }) => bgColor};
   color: #fff;
   -webkit-line-clamp: 1;
-  ${ellipsis}
+  ${ellipsis};
+  ${({ extraDay }) => extraDay && "opacity: .4;"}
 `;
 
 export const item__number = css`
-  margin: 0.5rem 0.8rem 0.5rem 1rem;
+  margin: 5px 6px 5px 8px;
   float: left;
   font-size: inherit;
   line-height: 1.3;
+  color: inherit;
 `;
 
-export const DateArea = styled.div<{ day?: number }>`
+export const DateArea = styled.div<{ day?: number; extraDay?: boolean }>`
   margin-top: -1px;
   height: 7rem;
   font-size: 2rem;
   border-top: 1px solid #dee0e9;
   ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
+  ${({ extraDay }) => extraDay && "color: #bbb;"}
 `;
 
 export const AlrtBtn = styled.button<{ isAlrtOn?: boolean }>`

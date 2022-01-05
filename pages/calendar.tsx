@@ -1,10 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import styled from "@emotion/styled";
-import { cx, css } from "@emotion/css";
+import { cx } from "@emotion/css";
 import useCalendar from "hooks/useCalendar";
 import { IUserCalendar, TCalendarMap } from "interface";
 import { where, Timestamp } from "@firebase/firestore";
-import { fetchQueryData } from "core/firestore";
+import { fetchQueryData, getTimestampSecFromDate, getTimestampSecFromNumber } from "core/firestore";
 import CalendarDateArea from "components/calendar/CalendarDateArea";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
 const {
@@ -32,27 +31,25 @@ const Calendar = () => {
   const [error, setError] = useState();
   const [data, setData] = useState<IUserCalendar[]>([]);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
-  const getCalDate = useMemo(() => (date: number) => calendarMap.has(date) ? calendarMap.get(date) : [], [calendarMap]);
+  const getCalDate = useMemo(() => (sec: number) => calendarMap.has(sec) ? calendarMap.get(sec) : [], [calendarMap]);
 
   useEffect(() => {
     const startTime = Timestamp.fromDate(new Date(prevYM[0], prevYM[1] - 1, prevLastDate - firstDay + 1));
-    console.log(startTime);
-    const lastTime = Timestamp.fromDate(new Date(currYM[0], currYM[1] - 1, lastDate));
+    const lastTime = Timestamp.fromDate(new Date(nextYM[0], nextYM[1] - 1, 6 - lastDay));
     fetchQueryData<IUserCalendar>(calendar_collection, [where("d_time", ">=", startTime), where("d_time", "<=", lastTime)])
       .then((res) => {
-        console.log(res);
         const map = new Map<number, IUserCalendar[]>();
         res.forEach((curr) => {
-          const curr_date = curr.d_time.toDate().getDate();
-          if (map.has(curr_date)) {
-            map.set(curr_date, [...map.get(curr_date), curr]);
-          } else map.set(curr_date, [curr]);
+          const timestampSec = getTimestampSecFromDate(curr.d_time);
+          if (map.has(timestampSec)) {
+            map.set(timestampSec, [...map.get(timestampSec), curr]);
+          } else map.set(timestampSec, [curr]);
         });
         setCalendarMap(map);
         setData(res);
       })
       .catch((err) => setError(err));
-  }, [currYM, firstDay, lastDate, prevLastDate, prevYM]);
+  }, [currYM, firstDay, lastDay, nextYM, prevLastDate, prevYM]);
 
   return (
     <section>
@@ -78,28 +75,37 @@ const Calendar = () => {
           <DateArea className={cx(top__weekend, top__day)}>토</DateArea>
         </Grid>
         <Grid>
-          {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((d, idx) => (
-            <DateArea key={d} data-set-date={d} data-set-year={prevYM[0]} data-set-month={prevYM[1]} day={getDay(prevYM[0], prevYM[1], d)}>
-              <div className={cx(item__number, extra__day)}>{d}</div>
-            </DateArea>
-          ))}
-          {Array.from({ length: lastDate }, (v, i) => i + 1).map((d) => (
+          {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((date) => (
             <CalendarDateArea
-              key={d}
-              year={currYM[0]}
-              month={currYM[1]}
-              date={d}
-              day={getDay(currYM[0], currYM[1], d)}
-              calData={getCalDate(d)}
+              key={date}
+              year={prevYM[0]}
+              month={prevYM[1]}
+              date={date}
+              day={getDay(prevYM[0], prevYM[1], date)}
+              calData={getCalDate(getTimestampSecFromNumber(prevYM[0], prevYM[1], date))}
+              extraDay
             />
           ))}
-          {Array.from({ length: 6 - lastDay }, (v, i) => i + 1).map((d) => (
-            <DateArea key={d} data-set-date={d} data-set-year={nextYM[0]} data-set-month={nextYM[1]} day={getDay(nextYM[0], nextYM[1], d)}>
-              <div className={cx(item__number, extra__day)}>
-                {d === 1 && `${nextYM[1]}/`}
-                {d}
-              </div>
-            </DateArea>
+          {Array.from({ length: lastDate }, (v, i) => i + 1).map((date) => (
+            <CalendarDateArea
+              key={date}
+              year={currYM[0]}
+              month={currYM[1]}
+              date={date}
+              day={getDay(currYM[0], currYM[1], date)}
+              calData={getCalDate(getTimestampSecFromNumber(currYM[0], currYM[1], date))}
+            />
+          ))}
+          {Array.from({ length: 6 - lastDay }, (v, i) => i + 1).map((date) => (
+            <CalendarDateArea
+              key={date}
+              year={nextYM[0]}
+              month={nextYM[1]}
+              date={date}
+              day={getDay(nextYM[0], nextYM[1], date)}
+              calData={getCalDate(getTimestampSecFromNumber(nextYM[0], nextYM[1], date))}
+              extraDay
+            />
           ))}
         </Grid>
       </CalLayer>

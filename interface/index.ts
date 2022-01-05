@@ -18,4 +18,10 @@ export interface IUserCalendar {
   title: string;
 }
 
+export interface IDateObj {
+  _y: number;
+  _m: number;
+  _d: number;
+}
+
 export type TCalendarMap = Map<number, IUserCalendar[]>;
