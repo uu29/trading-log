@@ -13,7 +13,14 @@ interface CalendarDateAreaProps {
 
 const CalendarDateArea = ({ year, month, date, day, calData, extraDay }: CalendarDateAreaProps) => {
   return (
-    <DateArea data-set-date={date} data-set-year={year} data-set-month={month} day={day} extraDay={extraDay}>
+    <DateArea
+      data-set-date={date}
+      data-set-year={year}
+      data-set-month={month}
+      day={day}
+      extraDay={extraDay}
+      hasSchedule={calData.length > 0}
+    >
       <div className={item__number}>
         {date === 1 && `${month}/`}
         {date}

@@ -15,7 +15,7 @@ export const Label = styled.div<{ bgColor: string; extraDay?: boolean }>`
   color: #fff;
   -webkit-line-clamp: 1;
   ${ellipsis};
-  ${({ extraDay }) => extraDay && "opacity: .4;"}
+  ${({ extraDay }) => extraDay && "background-color: rgba(163, 166, 181, .45)"}
 `;
 
 export const item__number = css`
@@ -26,13 +26,14 @@ export const item__number = css`
   color: inherit;
 `;
 
-export const DateArea = styled.div<{ day?: number; extraDay?: boolean }>`
+export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedule?: boolean }>`
   margin-top: -1px;
   height: 7rem;
   font-size: 2rem;
   border-top: 1px solid #dee0e9;
   ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
   ${({ extraDay }) => extraDay && "color: #bbb;"}
+  ${({ hasSchedule, extraDay }) => !extraDay && hasSchedule && "color: #1780e1;"}
 `;
 
 export const AlrtBtn = styled.button<{ isAlrtOn?: boolean }>`
