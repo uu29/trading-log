@@ -3,15 +3,15 @@ import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import Link from "next/link";
 import { fetchData, getDate } from "core/firestore";
-import { TradingDailyLog } from "interface";
+import { ITradingDailyLog } from "interface";
 const trading_collection = "user_trading_daily";
 
 const Home = () => {
   const [error, setError] = useState();
-  const [data, setData] = useState<TradingDailyLog[]>([]);
+  const [data, setData] = useState<ITradingDailyLog[]>([]);
 
   useEffect(() => {
-    fetchData<TradingDailyLog>(trading_collection)
+    fetchData<ITradingDailyLog>(trading_collection)
       .then((res) => setData(res))
       .catch((err) => setError(err));
   }, []);

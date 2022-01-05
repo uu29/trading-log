@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-export interface TradingDailyLog {
+export interface ITradingDailyLog {
   currency: string;
   description: string;
   reg_date: Timestamp;
@@ -11,9 +11,11 @@ export interface TradingDailyLog {
   trading_type: string;
 }
 
-export interface UserCalendar {
+export interface IUserCalendar {
   alert: boolean;
   content: string;
   d_time: Timestamp;
   title: string;
 }
+
+export type TCalendarMap = Map<number, IUserCalendar[]>;
