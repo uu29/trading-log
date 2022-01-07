@@ -26,11 +26,25 @@ export const item__number = css`
   color: inherit;
 `;
 
-export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedule?: boolean }>`
-  margin-top: -1px;
+const todayCell = `
+  position: relative;
+  &::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 2px solid #656772;
+    border-radius: 3px;
+  }
+`;
+
+export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedule?: boolean; isToday?: boolean }>`
   height: 7rem;
   font-size: 2rem;
   border-top: 1px solid #dee0e9;
+  ${({ isToday }) => isToday && todayCell};
   ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
   ${({ extraDay }) => extraDay && "color: #bbb;"}
   ${({ hasSchedule, extraDay }) => !extraDay && hasSchedule && "color: #1780e1;"}
@@ -94,7 +108,7 @@ export const top__day = css`
   font-size: 1.8rem;
   background: rgba(255, 255, 255, 0.8);
   border-top: 0 none;
-  border-bottom: 2px solid #dee0e9;
+  border-bottom: 1px solid #dee0e9;
 `;
 
 export const top__weekend = css`

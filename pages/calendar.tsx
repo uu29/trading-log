@@ -20,8 +20,6 @@ const {
   AlrtBtn,
   top__day,
   top__weekend,
-  item__number,
-  extra__day,
 } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
