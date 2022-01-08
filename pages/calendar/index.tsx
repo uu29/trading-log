@@ -8,7 +8,8 @@ import { daysKr, getTimestampSecFromDate, getTimestampSecFromNumber } from "core
 import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
-const { CalLayer, Grid, TitleArea, Title, ControlBtn, AddBtn, top__day, top__weekend } = CalendarStyle;
+import Link from "next/link";
+const { CalLayer, Grid, TitleArea, Title, ControlBtn, CreateLink, top__day, top__weekend } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
 const Calendar = () => {
@@ -47,7 +48,9 @@ const Calendar = () => {
             <span className="text">월</span>
           </Title>
           <ControlBtn type="button" onClick={setNextMonth} isNext />
-          <AddBtn type="button">일정 추가</AddBtn>
+          <Link href="/calendar/create" passHref>
+            <CreateLink type="button">일정 추가</CreateLink>
+          </Link>
         </TitleArea>
         <Grid>
           {daysKr.map((dayStr, dayNum) =>

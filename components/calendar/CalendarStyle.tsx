@@ -160,7 +160,7 @@ export const Title = styled.h2`
   }
 `;
 
-export const AddBtn = styled.button`
+export const CreateLink = styled.a`
   position: absolute;
   top: 1.8rem;
   right: 1.8rem;
