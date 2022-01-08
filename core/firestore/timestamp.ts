@@ -1,0 +1,62 @@
+import { Timestamp } from "firebase/firestore";
+import { IFullDateObj } from "interface";
+// firestore.Timestamp 날짜 파싱에 관한 함수
+
+export const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
+
+// Timestamp 데이터로부터 year, month, date 정보 파싱
+export const getDateObjFromTimestamp = (date: Timestamp): IFullDateObj => {
+  const t = date.toDate();
+  const _y = t.getFullYear();
+  const _m = t.getMonth() + 1;
+  const _d = t.getDate();
+  const _day = t.getDay();
+  const _h = t.getHours();
+  const _minutes = t.getMinutes();
+
+  return { _y, _m, _d, _day, _h, _minutes };
+};
+
+export const getDateStrFromTimestamp = (date: Timestamp): string => {
+  const { _y, _m, _d } = getDateObjFromTimestamp(date);
+  return `${_y}/${_m}/${_d}`;
+};
+
+export const getTimestampSecFromDate = (date: Timestamp) => {
+  const { _y, _m, _d } = getDateObjFromTimestamp(date);
+  return Timestamp.fromDate(new Date(_y, _m, _d)).seconds;
+};
+
+export const getTimestampSecFromNumber = (_y: number, _m: number, _d: number) => {
+  return Timestamp.fromDate(new Date(_y, _m, _d)).seconds;
+};
+
+// 데이트 포맷
+export const formatDate = (date: Date, fStr: string, utc?: boolean): string => {
+  const _utc = utc ? "getUTC" : "get";
+  return fStr.replace(/%[YmdHMS]/g, function (m) {
+    switch (m) {
+      case "%Y":
+        return date[_utc + "FullYear"](); // no leading zeros required
+      case "%m":
+        m = 1 + date[_utc + "Month"]();
+        break;
+      case "%d":
+        m = date[_utc + "Date"]();
+        break;
+      case "%H":
+        m = date[_utc + "Hours"]();
+        break;
+      case "%M":
+        m = date[_utc + "Minutes"]();
+        break;
+      case "%S":
+        m = date[_utc + "Seconds"]();
+        break;
+      default:
+        return m.slice(1); // unknown code, remove %
+    }
+    // add leading zero if required
+    return ("0" + m).slice(-2);
+  });
+};

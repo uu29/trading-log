@@ -3,31 +3,18 @@ import { cx } from "@emotion/css";
 import useCalendar from "hooks/useCalendar";
 import { IUserCalendar, TCalendarMap } from "interface";
 import { where, Timestamp } from "@firebase/firestore";
-import { fetchQueryData, getTimestampSecFromDate, getTimestampSecFromNumber } from "core/firestore";
+import { fetchQueryData } from "core/firestore";
+import { daysKr, getTimestampSecFromDate, getTimestampSecFromNumber } from "core/firestore/timestamp";
 import CalendarDateArea from "components/calendar/CalendarDateArea";
+import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
-const {
-  CalLayer,
-  Grid,
-  DateArea,
-  TitleArea,
-  Title,
-  Monthly,
-  Daily,
-  Time,
-  ControlBtn,
-  AddBtn,
-  AlrtBtn,
-  top__day,
-  top__weekend,
-} = CalendarStyle;
+const { CalLayer, Grid, TitleArea, Title, ControlBtn, AddBtn, top__day, top__weekend } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
 const Calendar = () => {
   const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
 
   const [error, setError] = useState();
-  const [data, setData] = useState<IUserCalendar[]>([]);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
   const getCalDate = useMemo(() => (sec: number) => calendarMap.has(sec) ? calendarMap.get(sec) : [], [calendarMap]);
 
@@ -44,7 +31,6 @@ const Calendar = () => {
           } else map.set(timestampSec, [curr]);
         });
         setCalendarMap(map);
-        setData(res);
       })
       .catch((err) => setError(err));
   }, [currYM, firstDay, lastDay, nextYM, prevLastDate, prevYM]);
@@ -64,13 +50,17 @@ const Calendar = () => {
           <AddBtn type="button">일정 추가</AddBtn>
         </TitleArea>
         <Grid>
-          <DateArea className={cx(top__weekend, top__day)}>일</DateArea>
-          <DateArea className={top__day}>월</DateArea>
-          <DateArea className={top__day}>화</DateArea>
-          <DateArea className={top__day}>수</DateArea>
-          <DateArea className={top__day}>목</DateArea>
-          <DateArea className={top__day}>금</DateArea>
-          <DateArea className={cx(top__weekend, top__day)}>토</DateArea>
+          {daysKr.map((dayStr, dayNum) =>
+            dayNum === 0 || dayNum === 6 ? (
+              <div key={dayStr} className={cx(top__weekend, top__day)}>
+                {dayStr}
+              </div>
+            ) : (
+              <div key={dayStr} className={top__day}>
+                {dayStr}
+              </div>
+            )
+          )}
         </Grid>
         <Grid>
           {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((date) => (
@@ -107,40 +97,7 @@ const Calendar = () => {
           ))}
         </Grid>
       </CalLayer>
-      <Monthly>
-        <li>
-          <strong>
-            16 <span>화</span>
-          </strong>
-          <Daily>
-            <li>
-              <Time>12:00</Time>
-              테슬라 실적 발표
-              <AlrtBtn type="button" isAlrtOn>
-                알람 켜짐
-              </AlrtBtn>
-            </li>
-            <li>
-              <Time>16:00</Time>
-              닌텐도 신작 공개
-              <AlrtBtn type="button">알람 꺼짐</AlrtBtn>
-            </li>
-          </Daily>
-        </li>
-        <li>
-          <strong>
-            25 <span>목</span>
-          </strong>
-          <Daily>
-            <li>
-              엔비디아 실적 발표
-              <AlrtBtn type="button" isAlrtOn>
-                알람 꺼짐
-              </AlrtBtn>
-            </li>
-          </Daily>
-        </li>
-      </Monthly>
+      <CalendarList listMap={calendarMap} />
     </section>
   );
 };

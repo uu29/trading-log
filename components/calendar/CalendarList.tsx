@@ -1,0 +1,58 @@
+import { useMemo } from "react";
+import * as CalendarStyle from "components/calendar/CalendarStyle";
+import { IUserCalendar, TCalendarMap } from "interface";
+import { daysKr, getDateObjFromTimestamp, formatDate } from "core/firestore/timestamp";
+const { MonthlyItem, MonthlyItemDate, MonthlyItemDay, Daily, Time, AlrtBtn } = CalendarStyle;
+
+const DailyListItem = ({ title, d_time, alert }: IUserCalendar) => {
+  const timeStr = useMemo(() => formatDate(d_time.toDate(), "%H:%M"), [d_time]);
+
+  return (
+    <li key={d_time.seconds}>
+      <Time>{timeStr}</Time>
+      {title}
+      <AlrtBtn type="button" isAlrtOn={alert}>
+        알람 {alert ? "켜짐" : "꺼짐"}
+      </AlrtBtn>
+    </li>
+  );
+};
+
+interface CalendarListItemProps {
+  dateList: IUserCalendar[]; // Timestamp의 seconds 데이터
+}
+
+const CalendarListItem = ({ dateList }: CalendarListItemProps) => {
+  const { _d, _day } = getDateObjFromTimestamp(dateList[0].d_time);
+  return (
+    <MonthlyItem>
+      <MonthlyItemDate>
+        {_d} <MonthlyItemDay>{daysKr[_day]}</MonthlyItemDay>
+      </MonthlyItemDate>
+      <Daily>
+        {dateList.map((data) => (
+          <DailyListItem key={data.d_time.seconds} {...data} />
+        ))}
+      </Daily>
+    </MonthlyItem>
+  );
+};
+
+interface CalendarListProps {
+  listMap: TCalendarMap;
+}
+
+const CalendarList = ({ listMap }: CalendarListProps) => {
+  const date_list = listMap.keys();
+  let keys = Array.from(date_list);
+
+  return (
+    <ul>
+      {keys.map((key) => (
+        <CalendarListItem key={key} dateList={listMap.get(key)} />
+      ))}
+    </ul>
+  );
+};
+
+export default CalendarList;

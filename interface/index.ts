@@ -18,10 +18,13 @@ export interface IUserCalendar {
   title: string;
 }
 
-export interface IDateObj {
+export interface IFullDateObj {
   _y: number;
   _m: number;
   _d: number;
+  _day: number;
+  _h: number;
+  _minutes: number;
 }
 
 export type TCalendarMap = Map<number, IUserCalendar[]>;

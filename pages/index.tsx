@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import Link from "next/link";
-import { fetchData, getDateStrFromTimestamp } from "core/firestore";
+import { fetchData } from "core/firestore";
+import { getDateStrFromTimestamp } from "core/firestore/timestamp";
 import { ITradingDailyLog } from "interface";
 const trading_collection = "user_trading_daily";
 

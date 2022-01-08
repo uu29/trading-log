@@ -5,8 +5,7 @@ import { ellipsis } from "styles/StyleLib";
 export const colors = ["#314BDB", "#F59A2F", "#FCF208", "#14BF58", "#4CB8F5"];
 
 export const Label = styled.div<{ bgColor: string; extraDay?: boolean }>`
-  margin-top: 0.9rem;
-  margin-right: 5px;
+  float: right;
   padding: 2px 4px;
   border-radius: 2px;
   line-height: 1.3;
@@ -19,10 +18,10 @@ export const Label = styled.div<{ bgColor: string; extraDay?: boolean }>`
 `;
 
 export const item__number = css`
-  margin: 5px 6px 5px 8px;
+  margin: 0 4px 2px 2px;
   float: left;
   font-size: inherit;
-  line-height: 1.3;
+  line-height: 1;
   color: inherit;
 `;
 
@@ -44,6 +43,7 @@ export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedu
   height: 7rem;
   font-size: 2rem;
   border-top: 1px solid #dee0e9;
+  padding: 4px;
   ${({ isToday }) => isToday && todayCell};
   ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
   ${({ extraDay }) => extraDay && "color: #bbb;"}
@@ -80,25 +80,25 @@ export const Time = styled.em`
   margin-right: 0.8rem;
 `;
 
-export const Monthly = styled.ul`
-  > li {
-    display: flex;
-    margin: 1rem 0;
-    padding: 1.6rem 3.2rem;
-    background: #fff;
-    font-size: 2rem;
-    > strong {
-      line-height: 1;
-      font-size: 2.4rem;
-      margin-right: 2rem;
-      color: #48a1f3;
+export const MonthlyItem = styled.li`
+  display: flex;
+  margin: 1rem 0;
+  padding: 1.6rem 3.2rem;
+  background: #fff;
+  font-size: 2rem;
+`;
 
-      > span {
-        font-size: 2.2rem;
-        font-weight: 400;
-      }
-    }
-  }
+export const MonthlyItemDate = styled.h3`
+  line-height: 1;
+  font-size: 2.4rem;
+  margin-right: 2rem;
+  color: #48a1f3;
+  font-weight: 500;
+`;
+
+export const MonthlyItemDay = styled.span`
+  font-size: 2.2rem;
+  font-weight: 400;
 `;
 
 export const top__day = css`
