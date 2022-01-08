@@ -1,7 +1,9 @@
 import { useMemo } from "react";
+import useCalendar from "hooks/useCalendar";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
 import { IUserCalendar, TCalendarMap } from "interface";
 import { daysKr, getDateObjFromTimestamp, formatDate } from "core/firestore/timestamp";
+// import { Timestamp } from "@firebase/firestore";
 const { MonthlyItem, MonthlyItemDate, MonthlyItemDay, Daily, Time, AlrtBtn } = CalendarStyle;
 
 const DailyListItem = ({ title, d_time, alert }: IUserCalendar) => {
@@ -23,7 +25,20 @@ interface CalendarListItemProps {
 }
 
 const CalendarListItem = ({ dateList }: CalendarListItemProps) => {
-  const { _d, _day } = getDateObjFromTimestamp(dateList[0].d_time);
+  const { currYM } = useCalendar();
+  const firstDTime = dateList[0].d_time;
+  const { _y, _m, _d, _day } = getDateObjFromTimestamp(firstDTime);
+
+  // const now = new Date();
+  // const now_y = now.getFullYear();
+  // const now_m = now.getMonth();
+  // const now_d = now.getDate();
+  // const nowDate = new Date(now_y, now_m, now_d);
+  // const nowTimestamp = Timestamp.fromDate(nowDate);
+  // const isPast = useMemo(() => firstDTime < nowTimestamp, [firstDTime, nowTimestamp]); // 오늘이 지났는지 여부
+
+  if (currYM[0] !== _y || currYM[1] !== _m) return <></>; // 이번달 스케줄만 보여줌
+
   return (
     <MonthlyItem>
       <MonthlyItemDate>

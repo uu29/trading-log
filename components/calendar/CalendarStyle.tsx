@@ -4,7 +4,7 @@ import { ellipsis } from "styles/StyleLib";
 
 export const colors = ["#314BDB", "#F59A2F", "#FCF208", "#14BF58", "#4CB8F5"];
 
-export const Label = styled.div<{ bgColor: string; extraDay?: boolean }>`
+export const Label = styled.div<{ bgColor: string; isFirst: boolean; extraDay?: boolean }>`
   float: right;
   padding: 2px 4px;
   border-radius: 2px;
@@ -15,6 +15,7 @@ export const Label = styled.div<{ bgColor: string; extraDay?: boolean }>`
   -webkit-line-clamp: 1;
   ${ellipsis};
   ${({ extraDay }) => extraDay && "background-color: rgba(163, 166, 181, .45)"}
+  ${({ isFirst }) => isFirst && "max-width: 80%"}
 `;
 
 export const item__number = css`
@@ -27,7 +28,7 @@ export const item__number = css`
 
 const todayCell = `
   position: relative;
-  &::after {
+  &::before {
     content: "";
     width: 100%;
     height: 100%;

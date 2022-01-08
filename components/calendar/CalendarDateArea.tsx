@@ -35,7 +35,7 @@ const CalendarDateArea = ({ year, month, date, day, calData, extraDay }: Calenda
         {date}
       </div>
       {calData.map((d, i) => (
-        <Label key={d.d_time.toString()} bgColor={colors[i]} extraDay={extraDay}>
+        <Label key={d.d_time.toString()} bgColor={colors[i]} isFirst={i === 0} extraDay={extraDay}>
           {d.title}
         </Label>
       ))}
