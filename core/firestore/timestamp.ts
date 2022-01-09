@@ -2,7 +2,6 @@ import { Timestamp } from "firebase/firestore";
 import { IFullDateObj } from "interface";
 // firestore.Timestamp 날짜 파싱에 관한 함수
 
-export const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
 const oneDayMilliSeconds = 86400;
 
 // Date obj to seconds number

@@ -23,6 +23,7 @@ const useCalendar = () => {
   const [firstDateSec, setFirstDateSec] = useState(0); // 이번달 첫째 날의 seconds date
   const [lastDateSec, setLastDateSec] = useState(0); // 이번달 마지막 날의 seconds date
   const [secondsFromEpoch, setSecondsFromEpoch] = useState<number[]>([]);
+  const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
 
   const setPrevMonth = () => {
     if (currMonth > 0) setCurrMonth(currMonth - 1);
@@ -67,10 +68,13 @@ const useCalendar = () => {
     currYM,
     startDateSec,
     endDateSec,
+    firstDateSec,
+    lastDateSec,
     setPrevMonth,
     setNextMonth,
     secondsFromEpoch,
     checkExtraDay,
+    daysKr,
   };
 };
 export default useCalendar;

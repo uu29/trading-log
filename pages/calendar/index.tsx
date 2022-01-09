@@ -4,7 +4,6 @@ import useCalendar from "hooks/useCalendar";
 import { IUserCalendar, TCalendarMap } from "interface";
 import { where, Timestamp } from "@firebase/firestore";
 import { fetchQueryData } from "core/firestore";
-import { daysKr } from "core/firestore/timestamp";
 import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
@@ -13,7 +12,7 @@ const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, CreateLink, to
 const calendar_collection = "user_calendar";
 
 const Calendar = () => {
-  const { currYM, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch, checkExtraDay } = useCalendar();
+  const { currYM, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch, checkExtraDay, daysKr } = useCalendar();
 
   const [error, setError] = useState(null);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
