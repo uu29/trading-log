@@ -14,8 +14,8 @@ export const Label = styled.div<{ bgColor: string; isFirst: boolean; extraDay?: 
   color: #fff;
   -webkit-line-clamp: 1;
   ${ellipsis};
-  ${({ extraDay }) => extraDay && "background-color: rgba(163, 166, 181, .45)"}
-  ${({ isFirst }) => isFirst && "max-width: 80%"}
+  ${({ extraDay }) => extraDay && "background-color: rgba(163, 166, 181, .45);"}
+  ${({ isFirst }) => isFirst && "max-width: 80%;"}
 `;
 
 export const item__number = css`
