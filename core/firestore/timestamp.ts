@@ -3,6 +3,21 @@ import { IFullDateObj } from "interface";
 // firestore.Timestamp 날짜 파싱에 관한 함수
 
 export const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
+const oneDayMilliSeconds = 86400000;
+
+// Date obj to seconds number
+export const secondsSinceEpoch = (d) => Math.floor(d / 1000);
+
+// 시작 날짜부터 마지막 날짜까지 하루씩 더한 날짜들의 배열(seconds 데이터)
+export const getDatesStartToLast = (startDate: number, lastDate: number): number[] => {
+  const result: number[] = [];
+  let curDate = startDate;
+  while (curDate <= lastDate) {
+    result.push(curDate);
+    curDate = curDate + oneDayMilliSeconds;
+  }
+  return result;
+};
 
 // Timestamp 데이터로부터 year, month, date 정보 파싱
 export const getDateObjFromTimestamp = (date: Timestamp): IFullDateObj => {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { secondsSinceEpoch, getDatesStartToLast } from "core/firestore/timestamp";
 
 // 현재 날짜의 연, 월 구하는 함수
 const getYM = (year: number, month: number) => {
@@ -23,6 +24,7 @@ const useCalendar = () => {
   const [lastDate, setLastDate] = useState(0);
   const [firstDay, setFirstDay] = useState(0);
   const [lastDay, setlastDay] = useState(0);
+  const [secondsFromEpoch, setSecondsFromEpoch] = useState<number[]>([]);
 
   // 이번 달의 말일 구하는 함수
   const getLastDate = (year, month) => {
@@ -34,7 +36,7 @@ const useCalendar = () => {
     return new Date(year, month, 0).getDate();
   };
 
-  const setPrevMonth = (prev) => {
+  const setPrevMonth = () => {
     if (currMonth > 0) setCurrMonth(currMonth - 1);
     else {
       setCurrMonth(11);
@@ -56,8 +58,8 @@ const useCalendar = () => {
   };
 
   useEffect(() => {
-    const first_day = new Date(currYear, currMonth, 1).getDay();
-    const last_day = new Date(currYear, currMonth + 1, 0).getDay();
+    const first_day = new Date(currYear, currMonth, 1).getDay(); // 이번달의 첫째 날
+    const last_day = new Date(currYear, currMonth + 1, 0).getDay(); // 이번달의 마지막 날
     const _prevYM = getYM(currYear, currMonth - 1);
     const _currYM = getYM(currYear, currMonth);
     const _nextYM = getYM(currYear, currMonth + 1);
@@ -68,8 +70,21 @@ const useCalendar = () => {
     setPrevLastDate(getPrevLastDate(currYear, currMonth));
     setFirstDay(first_day);
     setlastDay(last_day);
+
+    const firstDate = new Date(currYear, currMonth, 1); // 이번달의 첫째 날
+    const firstDay = firstDate.getDay(); // 첫째 날의 요일
+    let startDate = secondsSinceEpoch(firstDate);
+    const lastDate = new Date(currYear, currMonth + 1, 0); // 이번달의 마지막 날
+    const lastDay = lastDate.getDay(); // 마지막 날의 요일
+    let endDate = secondsSinceEpoch(lastDate);
+
+    if (firstDay !== 0) startDate = firstDate.setDate(firstDate.getDate() - firstDay);
+    if (lastDay !== 6) endDate = lastDate.setDate(lastDate.getDate() + (6 - lastDay));
+    // 1일 단위로 배열로 만들기
+    const secondsFromStartToEndDate = getDatesStartToLast(startDate, endDate);
+    setSecondsFromEpoch(secondsFromStartToEndDate);
   }, [currMonth, currYear]);
 
-  return { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay };
+  return { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay, secondsFromEpoch };
 };
 export default useCalendar;

@@ -1,6 +1,7 @@
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
+import CalendarForm from "components/form/CalendarForm";
 
 const select_icon_style = css`
   margin-top: 0.5rem;
@@ -60,6 +61,7 @@ const Create = () => {
           <LeftColumn>
             <Label htmlFor="date">매매 일자</Label>
             <InputDate type="text" id="date" name="date" value={form.date} onChange={handleChange} readOnly className={form_input_style} />
+            <CalendarForm />
           </LeftColumn>
           <RightColumn>
             <Label htmlFor="sales">매도/매수</Label>
@@ -158,6 +160,7 @@ const RightColumn = styled.div`
 `;
 
 const LeftColumn = styled.div`
+  position: relative;
   margin-right: 1.6rem;
   flex: 1 0 0;
 `;

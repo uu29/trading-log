@@ -9,13 +9,13 @@ import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
 import Link from "next/link";
-const { CalLayer, Grid, TitleArea, Title, ControlBtn, CreateLink, top__day, top__weekend } = CalendarStyle;
+const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, CreateLink, top__day, top__weekend } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
 const Calendar = () => {
   const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
 
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
   const getCalDate = useMemo(() => (sec: number) => calendarMap.has(sec) ? calendarMap.get(sec) : [], [calendarMap]);
 
@@ -35,6 +35,8 @@ const Calendar = () => {
       })
       .catch((err) => setError(err));
   }, [currYM, firstDay, lastDay, nextYM, prevLastDate, prevYM]);
+  
+  if (error) return <>데이터를 불러올 수 없습니다.</>; // error 처리 해주기
 
   return (
     <section>
@@ -52,7 +54,7 @@ const Calendar = () => {
             <CreateLink type="button">일정 추가</CreateLink>
           </Link>
         </TitleArea>
-        <Grid>
+        <CalendarGridWrap>
           {daysKr.map((dayStr, dayNum) =>
             dayNum === 0 || dayNum === 6 ? (
               <div key={dayStr} className={cx(top__weekend, top__day)}>
@@ -64,8 +66,8 @@ const Calendar = () => {
               </div>
             )
           )}
-        </Grid>
-        <Grid>
+        </CalendarGridWrap>
+        <CalendarGridWrap>
           {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((date) => (
             <CalendarDateArea
               key={date}
@@ -98,7 +100,7 @@ const Calendar = () => {
               extraDay
             />
           ))}
-        </Grid>
+        </CalendarGridWrap>
       </CalLayer>
       <CalendarList listMap={calendarMap} />
     </section>

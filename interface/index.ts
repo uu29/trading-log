@@ -16,15 +16,22 @@ export interface IUserCalendar {
   content: string;
   d_time: Timestamp;
   title: string;
+  date: Timestamp;
+  time?: Timestamp; // 없으면 유저가 시간 설정 안한 것
 }
 
-export interface IFullDateObj {
+interface IDateObj {
   _y: number;
   _m: number;
   _d: number;
   _day: number;
+}
+
+export interface IFullDateObj extends IDateObj {
   _h: number;
   _minutes: number;
 }
+
+export type ISecondsMap = Map<number, IDateObj>;
 
 export type TCalendarMap = Map<number, IUserCalendar[]>;

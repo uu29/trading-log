@@ -120,7 +120,7 @@ export const extra__day = css`
   color: #bbb;
 `;
 
-export const Grid = styled.div`
+export const CalendarGridWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 `;
