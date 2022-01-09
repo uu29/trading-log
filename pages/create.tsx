@@ -143,6 +143,7 @@ const InputDate = styled.input`
   width: 100%;
   height: 6rem;
   color: #5e5e5e;
+  text-align: center;
 `;
 
 const SalesOptions = styled.div<{ salesType: SalesType }>`

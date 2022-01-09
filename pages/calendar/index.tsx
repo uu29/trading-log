@@ -13,13 +13,12 @@ const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, CreateLink, to
 const calendar_collection = "user_calendar";
 
 const Calendar = () => {
-  const { currYM, firstDateSec, lastDateSec, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch } = useCalendar();
+  const { currYM, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch, checkExtraDay } = useCalendar();
 
   const [error, setError] = useState(null);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
 
   const getCalDate = useMemo(() => (sec: number) => calendarMap.has(sec) ? calendarMap.get(sec) : [], [calendarMap]);
-  const checkExtraDay = useMemo(() => (sec: number) => sec < firstDateSec || sec > lastDateSec, [firstDateSec, lastDateSec]);
 
   useEffect(() => {
     const startTime = Timestamp.fromDate(new Date(startDateSec * 1000));

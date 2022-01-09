@@ -5,10 +5,6 @@ import { colors, Label, item__number, DateArea } from "./CalendarStyle";
 
 interface CalendarDateAreaProps {
   sec: number; // ecpoch seconds 데이터
-  // year: number; // 연도
-  // month: number; // 월
-  // date: number; // 일
-  // day: number; // 요일
   calData: IUserCalendar[]; // 해당 일자의 알람 데이터
   extraDay?: boolean; // 이전달, 다음달 데이터인지 여부
 }
@@ -19,11 +15,8 @@ today.setHours(0, 0, 0, 0);
 const todaySec = secondsSinceEpoch(today);
 
 const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => {
-  // console.log('-----');
-  // console.log(sec);
   const isToday = useMemo(() => todaySec === sec, [sec]);
-
-  const { _y, _m, _d, _day } = getDateObjFromSeconds(sec);
+  const { _m, _d, _day } = getDateObjFromSeconds(sec);
 
   return (
     <DateArea day={_day} extraDay={extraDay} hasSchedule={calData.length > 0} isToday={isToday}>

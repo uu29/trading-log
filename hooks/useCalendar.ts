@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { secondsSinceEpoch, getDatesStartToLast } from "core/firestore/timestamp";
 
 // 현재 날짜의 연, 월 구하는 함수
@@ -61,15 +61,16 @@ const useCalendar = () => {
     setSecondsFromEpoch(secondsFromStartToEndDate);
   }, [currMonth, currYear]);
 
+  const checkExtraDay = useMemo(() => (sec: number) => sec < firstDateSec || sec > lastDateSec, [firstDateSec, lastDateSec]);
+
   return {
     currYM,
-    firstDateSec,
-    lastDateSec,
     startDateSec,
     endDateSec,
     setPrevMonth,
     setNextMonth,
     secondsFromEpoch,
+    checkExtraDay,
   };
 };
 export default useCalendar;
