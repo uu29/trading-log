@@ -4,7 +4,7 @@ import useCalendar from "hooks/useCalendar";
 import { IUserCalendar, TCalendarMap } from "interface";
 import { where, Timestamp } from "@firebase/firestore";
 import { fetchQueryData } from "core/firestore";
-import { daysKr, getTimestampSecFromDate, getTimestampSecFromNumber } from "core/firestore/timestamp";
+import { daysKr } from "core/firestore/timestamp";
 import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
@@ -13,20 +13,22 @@ const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, CreateLink, to
 const calendar_collection = "user_calendar";
 
 const Calendar = () => {
-  const { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay } = useCalendar();
+  const { currYM, firstDateSec, lastDateSec, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch } = useCalendar();
 
   const [error, setError] = useState(null);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
+
   const getCalDate = useMemo(() => (sec: number) => calendarMap.has(sec) ? calendarMap.get(sec) : [], [calendarMap]);
+  const checkExtraDay = useMemo(() => (sec: number) => sec < firstDateSec || sec > lastDateSec, [firstDateSec, lastDateSec]);
 
   useEffect(() => {
-    const startTime = Timestamp.fromDate(new Date(prevYM[0], prevYM[1] - 1, prevLastDate - firstDay + 1));
-    const lastTime = Timestamp.fromDate(new Date(nextYM[0], nextYM[1] - 1, 6 - lastDay));
+    const startTime = Timestamp.fromDate(new Date(startDateSec * 1000));
+    const lastTime = Timestamp.fromDate(new Date(endDateSec * 1000));
     fetchQueryData<IUserCalendar>(calendar_collection, [where("d_time", ">=", startTime), where("d_time", "<=", lastTime)])
       .then((res) => {
         const map = new Map<number, IUserCalendar[]>();
         res.forEach((curr) => {
-          const timestampSec = getTimestampSecFromDate(curr.d_time);
+          const timestampSec = curr.date.seconds;
           if (map.has(timestampSec)) {
             map.set(timestampSec, [...map.get(timestampSec), curr]);
           } else map.set(timestampSec, [curr]);
@@ -34,8 +36,8 @@ const Calendar = () => {
         setCalendarMap(map);
       })
       .catch((err) => setError(err));
-  }, [currYM, firstDay, lastDay, nextYM, prevLastDate, prevYM]);
-  
+  }, [currYM, startDateSec, endDateSec]);
+
   if (error) return <>데이터를 불러올 수 없습니다.</>; // error 처리 해주기
 
   return (
@@ -68,37 +70,8 @@ const Calendar = () => {
           )}
         </CalendarGridWrap>
         <CalendarGridWrap>
-          {Array.from({ length: firstDay }, (v, i) => prevLastDate - firstDay + i + 1).map((date) => (
-            <CalendarDateArea
-              key={date}
-              year={prevYM[0]}
-              month={prevYM[1]}
-              date={date}
-              day={getDay(prevYM[0], prevYM[1], date)}
-              calData={getCalDate(getTimestampSecFromNumber(prevYM[0], prevYM[1], date))}
-              extraDay
-            />
-          ))}
-          {Array.from({ length: lastDate }, (v, i) => i + 1).map((date) => (
-            <CalendarDateArea
-              key={date}
-              year={currYM[0]}
-              month={currYM[1]}
-              date={date}
-              day={getDay(currYM[0], currYM[1], date)}
-              calData={getCalDate(getTimestampSecFromNumber(currYM[0], currYM[1], date))}
-            />
-          ))}
-          {Array.from({ length: 6 - lastDay }, (v, i) => i + 1).map((date) => (
-            <CalendarDateArea
-              key={date}
-              year={nextYM[0]}
-              month={nextYM[1]}
-              date={date}
-              day={getDay(nextYM[0], nextYM[1], date)}
-              calData={getCalDate(getTimestampSecFromNumber(nextYM[0], nextYM[1], date))}
-              extraDay
-            />
+          {secondsFromEpoch.map((sec) => (
+            <CalendarDateArea key={sec} sec={sec} calData={getCalDate(sec)} extraDay={checkExtraDay(sec)} />
           ))}
         </CalendarGridWrap>
       </CalLayer>

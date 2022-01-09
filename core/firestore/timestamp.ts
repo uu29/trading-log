@@ -3,7 +3,7 @@ import { IFullDateObj } from "interface";
 // firestore.Timestamp 날짜 파싱에 관한 함수
 
 export const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
-const oneDayMilliSeconds = 86400000;
+const oneDayMilliSeconds = 86400;
 
 // Date obj to seconds number
 export const secondsSinceEpoch = (d) => Math.floor(d / 1000);
@@ -17,6 +17,18 @@ export const getDatesStartToLast = (startDate: number, lastDate: number): number
     curDate = curDate + oneDayMilliSeconds;
   }
   return result;
+};
+
+// epoch seconds 데이터로부터 시간정보 파싱
+export const getDateObjFromSeconds = (sec: number): IFullDateObj => {
+  const t = new Date(sec * 1000);
+  const _y = t.getFullYear();
+  const _m = t.getMonth() + 1;
+  const _d = t.getDate();
+  const _day = t.getDay();
+  const _h = t.getHours();
+  const _minutes = t.getMinutes();
+  return { _y, _m, _d, _day, _h, _minutes };
 };
 
 // Timestamp 데이터로부터 year, month, date 정보 파싱

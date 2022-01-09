@@ -17,24 +17,12 @@ const getYM = (year: number, month: number) => {
 const useCalendar = () => {
   const [currMonth, setCurrMonth] = useState(new Date().getMonth());
   const [currYear, setCurrYear] = useState(new Date().getFullYear());
-  const [prevYM, setPrevYM] = useState([0, 0]);
   const [currYM, setCurrYM] = useState([0, 0]);
-  const [nextYM, setNextYM] = useState([0, 0]);
-  const [prevLastDate, setPrevLastDate] = useState(0);
-  const [lastDate, setLastDate] = useState(0);
-  const [firstDay, setFirstDay] = useState(0);
-  const [lastDay, setlastDay] = useState(0);
+  const [startDateSec, setStartDateSec] = useState(0); // 달력 시작 날짜의 seconds date
+  const [endDateSec, setEndDateSec] = useState(0); // 달력 마지막 날짜의 seconds date
+  const [firstDateSec, setFirstDateSec] = useState(0); // 이번달 첫째 날의 seconds date
+  const [lastDateSec, setLastDateSec] = useState(0); // 이번달 마지막 날의 seconds date
   const [secondsFromEpoch, setSecondsFromEpoch] = useState<number[]>([]);
-
-  // 이번 달의 말일 구하는 함수
-  const getLastDate = (year, month) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  // 저번 달의 말일 구하는 함수
-  const getPrevLastDate = (year, month) => {
-    return new Date(year, month, 0).getDate();
-  };
 
   const setPrevMonth = () => {
     if (currMonth > 0) setCurrMonth(currMonth - 1);
@@ -52,39 +40,36 @@ const useCalendar = () => {
     }
   };
 
-  const getDay = (year: number, month: number, date: number) => {
-    let now = new Date(year, month - 1, date);
-    return now.getDay();
-  };
-
   useEffect(() => {
-    const first_day = new Date(currYear, currMonth, 1).getDay(); // 이번달의 첫째 날
-    const last_day = new Date(currYear, currMonth + 1, 0).getDay(); // 이번달의 마지막 날
-    const _prevYM = getYM(currYear, currMonth - 1);
     const _currYM = getYM(currYear, currMonth);
-    const _nextYM = getYM(currYear, currMonth + 1);
-    setPrevYM(_prevYM);
     setCurrYM(_currYM);
-    setNextYM(_nextYM);
-    setLastDate(getLastDate(currYear, currMonth));
-    setPrevLastDate(getPrevLastDate(currYear, currMonth));
-    setFirstDay(first_day);
-    setlastDay(last_day);
-
     const firstDate = new Date(currYear, currMonth, 1); // 이번달의 첫째 날
+    const lastDate = new Date(currYear, currMonth + 1, 0); // 이번달의 마지막 날
+    setFirstDateSec(secondsSinceEpoch(firstDate));
     const firstDay = firstDate.getDay(); // 첫째 날의 요일
     let startDate = secondsSinceEpoch(firstDate);
-    const lastDate = new Date(currYear, currMonth + 1, 0); // 이번달의 마지막 날
+    setLastDateSec(secondsSinceEpoch(lastDate));
     const lastDay = lastDate.getDay(); // 마지막 날의 요일
     let endDate = secondsSinceEpoch(lastDate);
 
-    if (firstDay !== 0) startDate = firstDate.setDate(firstDate.getDate() - firstDay);
-    if (lastDay !== 6) endDate = lastDate.setDate(lastDate.getDate() + (6 - lastDay));
+    if (firstDay !== 0) startDate = firstDate.setDate(firstDate.getDate() - firstDay) / 1000; // seconds을 구하기 위해 1000으로 나눔
+    if (lastDay !== 6) endDate = lastDate.setDate(lastDate.getDate() + (6 - lastDay)) / 1000;
     // 1일 단위로 배열로 만들기
     const secondsFromStartToEndDate = getDatesStartToLast(startDate, endDate);
+    setStartDateSec(startDate);
+    setEndDateSec(endDate);
     setSecondsFromEpoch(secondsFromStartToEndDate);
   }, [currMonth, currYear]);
 
-  return { prevYM, currYM, nextYM, prevLastDate, lastDate, firstDay, lastDay, setPrevMonth, setNextMonth, getDay, secondsFromEpoch };
+  return {
+    currYM,
+    firstDateSec,
+    lastDateSec,
+    startDateSec,
+    endDateSec,
+    setPrevMonth,
+    setNextMonth,
+    secondsFromEpoch,
+  };
 };
 export default useCalendar;
