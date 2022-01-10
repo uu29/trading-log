@@ -21,6 +21,7 @@ export interface IUserCalendar {
 }
 
 interface IDateObj {
+  _t: Date;
   _y: number;
   _m: number;
   _d: number;
