@@ -8,15 +8,24 @@ interface FormDateAreaProps {
 
 const FormDateArea = ({ sec }: FormDateAreaProps) => {
   const { checkExtraDay } = useCalendar();
+  const extraDay = checkExtraDay(sec);
   const date = new Date(sec * 1000).getDate();
-  // 이번달 데이터가 아니면 빈 텍스트 리턴
-  if (checkExtraDay(sec)) return <DateItem></DateItem>;
 
-  return <DateItem>{date}</DateItem>;
+  return <DateItem extraDay={extraDay}>{date}</DateItem>;
+};
+
+const dateDiffMontly = (year, month, monthly_period) => {
+  const now = new Date(year, month, 1);
+  let diff = new Date(now.setMonth(now.getMonth() + monthly_period)); // 특정 month만큼 더하거나 뺌
+  return diff;
 };
 
 const CalendarForm = () => {
   const { currYM, secondsFromEpoch, daysKr } = useCalendar();
+  const oneMonthAgo = dateDiffMontly(currYM[0], currYM[1] - 1, -1);
+  const oneMonthLater = dateDiffMontly(currYM[0], currYM[1] - 1, 1);
+  console.log("oneMonthAgo: ", oneMonthAgo);
+  console.log("oneMonthLater: ", oneMonthLater);
 
   return (
     <CalendarFormWrap>
@@ -60,13 +69,15 @@ const CalendarFormWrap = styled.div`
 const CalendarFormLayer = styled.article`
   max-width: 35rem;
   margin: auto;
+  padding-bottom: 0.5rem;
 `;
 
-const DateItem = styled.div`
+const DateItem = styled.div<{ extraDay: boolean }>`
   text-align: center;
   line-height: 5rem;
   height: 5rem;
   font-size: 1.65rem;
+  ${({ extraDay }) => extraDay && `color: #bbb`}
 `;
 
 const DaysItem = styled.div`
@@ -82,6 +93,8 @@ const DaysItem = styled.div`
 const CurrDate = styled.div`
   padding: 1.5rem 0 1rem;
   text-align: center;
+  font-size: 1.8rem;
+
   h3 {
     display: inline-block;
     padding-bottom: 2px;
