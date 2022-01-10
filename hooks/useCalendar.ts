@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { secondsSinceEpoch, getDatesStartToLast } from "core/firestore/timestamp";
+import { getDateRangeByDay, secondsSinceEpoch } from "core/firestore/timestamp";
 
 // 현재 날짜의 연, 월 구하는 함수
 const getYM = (year: number, month: number) => {
@@ -82,7 +82,7 @@ const useCalendar = (start_date_sec?: number, end_date_sec?: number) => {
     if (end_date_sec) end_date = end_date_sec;
 
     // 1일 단위로 배열로 만들기
-    const seconds = getDatesStartToLast(start_date, end_date);
+    const seconds = getDateRangeByDay(start_date, end_date);
     setStartDateSec(start_date);
     setEndDateSec(end_date);
     setSecondsFromEpoch(seconds);
@@ -94,8 +94,6 @@ const useCalendar = (start_date_sec?: number, end_date_sec?: number) => {
     currYM,
     startDateSec,
     endDateSec,
-    firstDateSec,
-    lastDateSec,
     setPrevMonth,
     setNextMonth,
     secondsFromEpoch,

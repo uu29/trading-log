@@ -8,7 +8,7 @@ const oneDayMilliSeconds = 86400;
 export const secondsSinceEpoch = (d) => Math.floor(d / 1000);
 
 // 시작 날짜부터 마지막 날짜까지 하루씩 더한 날짜들의 배열(seconds 데이터)
-export const getDatesStartToLast = (startDate: number, lastDate: number): number[] => {
+export const getDateRangeByDay = (startDate: number, lastDate: number): number[] => {
   const result: number[] = [];
   let curDate = startDate;
   while (curDate <= lastDate) {
@@ -20,27 +20,46 @@ export const getDatesStartToLast = (startDate: number, lastDate: number): number
 
 // epoch seconds 데이터로부터 시간정보 파싱
 export const getDateObjFromSeconds = (sec: number): IFullDateObj => {
-  const t = new Date(sec * 1000);
-  const _y = t.getFullYear();
-  const _m = t.getMonth() + 1;
-  const _d = t.getDate();
-  const _day = t.getDay();
-  const _h = t.getHours();
-  const _minutes = t.getMinutes();
-  return { _y, _m, _d, _day, _h, _minutes };
+  const _t = new Date(sec * 1000);
+  const _y = _t.getFullYear();
+  const _m = _t.getMonth() + 1;
+  const _d = _t.getDate();
+  const _day = _t.getDay();
+  const _h = _t.getHours();
+  const _minutes = _t.getMinutes();
+  return { _t, _y, _m, _d, _day, _h, _minutes };
+};
+
+/**
+ * 주어진 연/월의 n번째 날로 초기화 하는 함수
+ * @param {number?} n 1이면 첫째날, 0이면 마지막 날 (default = 1)
+ * @param {Date?} date 특정 날짜
+ * @returns {number} now_sec 초기화된 날짜의 seconds
+ */
+
+export const initDateSec = (n = 1, date?: Date) => {
+  let now_sec: number = 0;
+  if (date) now_sec = date.setDate(n);
+  else now_sec = new Date().setDate(n);
+  if (n === 0) {
+    let next_month = new Date(now_sec).getMonth() + 1;
+    now_sec = new Date(now_sec).setMonth(next_month);
+  }
+  now_sec = new Date(now_sec).setHours(0, 0, 0, 0);
+  return secondsSinceEpoch(now_sec);
 };
 
 // Timestamp 데이터로부터 year, month, date 정보 파싱
 export const getDateObjFromTimestamp = (date: Timestamp): IFullDateObj => {
-  const t = date.toDate();
-  const _y = t.getFullYear();
-  const _m = t.getMonth() + 1;
-  const _d = t.getDate();
-  const _day = t.getDay();
-  const _h = t.getHours();
-  const _minutes = t.getMinutes();
+  const _t = date.toDate();
+  const _y = _t.getFullYear();
+  const _m = _t.getMonth() + 1;
+  const _d = _t.getDate();
+  const _day = _t.getDay();
+  const _h = _t.getHours();
+  const _minutes = _t.getMinutes();
 
-  return { _y, _m, _d, _day, _h, _minutes };
+  return { _t, _y, _m, _d, _day, _h, _minutes };
 };
 
 export const getDateStrFromTimestamp = (date: Timestamp): string => {
