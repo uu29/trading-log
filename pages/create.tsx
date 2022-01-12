@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import CalendarForm from "components/form/CalendarForm";
 import { formatDate } from "core/firestore/timestamp";
+import { setDocData } from "core/firestore";
+const COL_NAME = "user_trading_daily";
 
 const select_icon_style = css`
   position: absolute;
@@ -32,30 +34,33 @@ const form_input_style = css`
   font-size: 2.4rem;
 `;
 
-const SalesType = {
+const TradingType = {
   sell: "매수",
   buy: "매도",
 } as const;
 
-type SalesType = typeof SalesType[keyof typeof SalesType];
+type TradingType = typeof TradingType[keyof typeof TradingType];
 
-interface IValue {
-  name: string;
-  sales: SalesType;
-  date: string;
-  count: number;
+interface ICreateParams {
+  stock_name: string;
+  trading_type: TradingType;
+  trading_date: string;
+  stock_amount: number;
   price: number;
-  desc: string;
+  description: string;
 }
 
-const initialValue: IValue = { name: "", sales: SalesType.sell, date: formatDate(new Date(), "%Y/%m/%d"), count: 0, price: 0, desc: "" };
-
-const onSubmit = (value) => {
-  console.log(value);
+const initialValue: ICreateParams = {
+  stock_name: "",
+  trading_type: TradingType.sell,
+  trading_date: formatDate(new Date(), "%Y/%m/%d"),
+  stock_amount: 0,
+  price: 0,
+  description: "",
 };
 
 const Create = () => {
-  const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
+  const { form, handleChange } = useForm<ICreateParams>({ initialValue });
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const toggleDate = () => {
@@ -68,19 +73,37 @@ const Create = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+    const unique_key = form.stock_name;
+    setDocData<ICreateParams>(COL_NAME, unique_key, form)
+      .then((res) => {
+        console.log("res!");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("err!");
+        console.log(err);
+      })
+      .finally(() => console.log("end."));
   };
 
   return (
     <FormWrap>
       <form method="post" onSubmit={handleSubmit}>
-        <Label htmlFor="name">종목 이름</Label>
-        <Input type="text" id="name" name="name" value={form.name} onChange={handleChange} className={form_input_style} />
+        <Label htmlFor="stock_name">종목 이름</Label>
+        <Input type="text" id="stock_name" name="stock_name" value={form.stock_name} onChange={handleChange} className={form_input_style} />
         <Flex>
           <LeftColumn>
-            <Label htmlFor="date">매매 일자</Label>
+            <Label htmlFor="trading_date">매매 일자</Label>
             <CalIcon onClick={toggleDate} />
-            <InputDate type="text" id="date" name="date" value={form.date} onClick={toggleDate} className={form_input_style} readOnly />
+            <InputDate
+              type="text"
+              id="trading_date"
+              name="trading_date"
+              value={form.trading_date}
+              onClick={toggleDate}
+              className={form_input_style}
+              readOnly
+            />
             {openCalendar && (
               <>
                 <CalendarForm />
@@ -89,17 +112,23 @@ const Create = () => {
             )}
           </LeftColumn>
           <RightColumn>
-            <Label htmlFor="sales">매도/매수</Label>
+            <Label htmlFor="trading_type">매도/매수</Label>
             <SelectBtn />
-            <SalesSelect className={form_input_style} salesType={form.sales} id="sales" name="sales" onChange={handleChange}>
-              <option value={SalesType.buy} selected={form.sales === SalesType.buy}>
-                {SalesType.buy}
+            <SalesSelect
+              className={form_input_style}
+              salesType={form.trading_type}
+              id="trading_type"
+              name="trading_type"
+              onChange={handleChange}
+            >
+              <option value={TradingType.buy} selected={form.trading_type === TradingType.buy}>
+                {TradingType.buy}
               </option>
-              <option value={SalesType.sell} selected={form.sales === SalesType.sell}>
-                {SalesType.sell}
+              <option value={TradingType.sell} selected={form.trading_type === TradingType.sell}>
+                {TradingType.sell}
               </option>
             </SalesSelect>
-            <input type="text" id="sales" name="sales" value={form.sales} onChange={handleChange} hidden />
+            <input type="text" id="trading_type" name="trading_type" value={form.trading_type} onChange={handleChange} hidden />
           </RightColumn>
         </Flex>
         <Flex>
@@ -115,19 +144,27 @@ const Create = () => {
             />
           </LeftColumn>
           <RightColumn>
-            <Label htmlFor="count">수량</Label>
+            <Label htmlFor="stock_amount">수량</Label>
             <Input
               type="text"
-              id="count"
-              name="count"
-              value={form.count}
+              id="stock_amount"
+              name="stock_amount"
+              value={form.stock_amount}
               onChange={handleChange}
               className={cx(form_input_style, number_input_style)}
             />
           </RightColumn>
         </Flex>
-        <Label htmlFor="desc">매매 이유</Label>
-        <TextArea id="desc" name="desc" rows={5} cols={33} value={form.desc} onChange={handleChange} className={form_input_style} />
+        <Label htmlFor="description">매매 이유</Label>
+        <TextArea
+          id="description"
+          name="description"
+          rows={5}
+          cols={33}
+          value={form.description}
+          onChange={handleChange}
+          className={form_input_style}
+        />
         <SubmitBtn>작성하기</SubmitBtn>
       </form>
     </FormWrap>
@@ -198,11 +235,11 @@ const InputDate = styled.input`
   cursor: pointer;
 `;
 
-const SalesSelect = styled.select<{ salesType: SalesType }>`
+const SalesSelect = styled.select<{ salesType: TradingType }>`
   width: 100%;
   display: block;
   height: 6rem;
-  color: ${({ salesType }) => (salesType === SalesType.sell ? "#F02828" : "#0778DF")};
+  color: ${({ salesType }) => (salesType === TradingType.sell ? "#F02828" : "#0778DF")};
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;

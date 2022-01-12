@@ -5,11 +5,9 @@ interface IValue {
   text: string;
 }
 const initialValue: IValue = { text: "" };
-const onSubmit = (value) => {
-  console.log(value);
-};
+
 const SearchBar = () => {
-  const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
+  const { form, handleChange } = useForm<IValue>({ initialValue });
   return (
     <BarWrap>
       <IcSearch />

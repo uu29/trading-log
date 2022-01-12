@@ -58,12 +58,8 @@ interface IValue {
 
 const initialValue: IValue = { name: "", count: 0, average: 0 };
 
-const onSubmit = (value) => {
-  console.log(value);
-};
-
 const PortCreate = () => {
-  const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
+  const { form, handleChange } = useForm<IValue>({ initialValue });
   return (
     <section>
       <Form method="post">
