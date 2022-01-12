@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import CalendarForm from "components/form/CalendarForm";
+import { formatDate } from "core/firestore/timestamp";
 
 const select_icon_style = css`
   margin-top: 0.5rem;
@@ -44,7 +46,8 @@ interface IValue {
   price: number;
   desc: string;
 }
-const initialValue: IValue = { name: "", sales: SalesType.sell, date: "2021/12/07", count: 0, price: 0, desc: "" };
+
+const initialValue: IValue = { name: "", sales: SalesType.sell, date: formatDate(new Date(), "%Y/%m/%d"), count: 0, price: 0, desc: "" };
 
 const onSubmit = (value) => {
   console.log(value);
@@ -52,6 +55,14 @@ const onSubmit = (value) => {
 
 const Create = () => {
   const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
+  const [openCalendar, setOpenCalendar] = useState(false);
+  const toggleDate = () => {
+    setOpenCalendar(!openCalendar);
+  };
+  const closeCalendar = () => {
+    setOpenCalendar(false);
+  };
+
   return (
     <FormWrap>
       <form method="post">
@@ -60,8 +71,14 @@ const Create = () => {
         <Flex>
           <LeftColumn>
             <Label htmlFor="date">매매 일자</Label>
-            <InputDate type="text" id="date" name="date" value={form.date} onChange={handleChange} readOnly className={form_input_style} />
-            <CalendarForm />
+            <CalIcon onClick={toggleDate} />
+            <InputDate type="text" id="date" name="date" value={form.date} onClick={toggleDate} className={form_input_style} readOnly />
+            {openCalendar && (
+              <>
+                <CalendarForm />
+                <CalendarBg onClick={closeCalendar} />
+              </>
+            )}
           </LeftColumn>
           <RightColumn>
             <Label htmlFor="sales">매도/매수</Label>
@@ -104,6 +121,25 @@ const Create = () => {
   );
 };
 
+const CalIcon = styled.div`
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  right: 2rem;
+  bottom: 2rem;
+  background: url(/images/ico__cal.svg) no-repeat center;
+  opacity: 0.9;
+  cursor: pointer;
+`;
+
+const CalendarBg = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+`;
+
 const SubmitBtn = styled.button`
   margin-top: 1.6rem;
   display: block;
@@ -144,6 +180,7 @@ const InputDate = styled.input`
   height: 6rem;
   color: #5e5e5e;
   text-align: center;
+  cursor: pointer;
 `;
 
 const SalesOptions = styled.div<{ salesType: SalesType }>`
