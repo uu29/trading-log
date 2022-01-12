@@ -1,43 +1,47 @@
+import { useMemo } from "react";
 import useCalendar from "hooks/useCalendar";
 import styled from "@emotion/styled";
-import { CalendarGridWrap } from "components/calendar/CalendarStyle";
+import { getDateObjFromSeconds, todaySec } from "core/firestore/timestamp";
+import { CalendarGridWrap, ControlBtn } from "components/calendar/CalendarStyle";
 
 interface FormDateAreaProps {
   sec: number;
+  extraDay: boolean;
 }
 
-const FormDateArea = ({ sec }: FormDateAreaProps) => {
-  const { checkExtraDay } = useCalendar();
-  const extraDay = checkExtraDay(sec);
+const FormDateArea = ({ sec, extraDay }: FormDateAreaProps) => {
+  const isToday = useMemo(() => todaySec() === sec, [sec]);
+
+  const { _day } = getDateObjFromSeconds(sec);
   const date = new Date(sec * 1000).getDate();
 
-  return <DateItem extraDay={extraDay}>{date}</DateItem>;
-};
-
-const dateDiffMontly = (year, month, monthly_period) => {
-  const now = new Date(year, month, 1);
-  let diff = new Date(now.setMonth(now.getMonth() + monthly_period)); // 특정 month만큼 더하거나 뺌
-  return diff;
+  return (
+    <DateItem extraDay={extraDay} isToday={isToday} isWeekend={_day === 0 || _day === 6}>
+      {date}
+    </DateItem>
+  );
 };
 
 const CalendarForm = () => {
-  const { currYM, secondsFromEpoch, daysKr } = useCalendar();
-  const oneMonthAgo = dateDiffMontly(currYM[0], currYM[1] - 1, -1);
-  const oneMonthLater = dateDiffMontly(currYM[0], currYM[1] - 1, 1);
-  console.log("oneMonthAgo: ", oneMonthAgo);
-  console.log("oneMonthLater: ", oneMonthLater);
+  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay } = useCalendar();
 
   return (
     <CalendarFormWrap>
       <CalendarFormLayer>
-        <CurrDate>
+        <CurrDateArea>
+          <ControlBtn type="button" onClick={setPrevMonth}>
+            이전
+          </ControlBtn>
           <h3>
             {currYM[0]}
             <span className="text">년 </span>
             {currYM[1]}
             <span className="text">월</span>
           </h3>
-        </CurrDate>
+          <ControlBtn type="button" isNext onClick={setNextMonth}>
+            다음
+          </ControlBtn>
+        </CurrDateArea>
         <CalendarGridWrap>
           {daysKr.map((dayStr) => (
             <DaysItem key={dayStr}>{dayStr}</DaysItem>
@@ -45,7 +49,7 @@ const CalendarForm = () => {
         </CalendarGridWrap>
         <CalendarGridWrap>
           {secondsFromEpoch.map((sec) => (
-            <FormDateArea key={sec} sec={sec} />
+            <FormDateArea key={sec} sec={sec} extraDay={checkExtraDay(sec)} />
           ))}
         </CalendarGridWrap>
       </CalendarFormLayer>
@@ -67,17 +71,29 @@ const CalendarFormWrap = styled.div`
 `;
 
 const CalendarFormLayer = styled.article`
-  max-width: 35rem;
+  max-width: 37rem;
   margin: auto;
   padding-bottom: 0.5rem;
 `;
 
-const DateItem = styled.div<{ extraDay: boolean }>`
-  text-align: center;
-  line-height: 5rem;
-  height: 5rem;
+const DateItem = styled.div<{ extraDay: boolean; isToday: boolean; isWeekend: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.2rem;
+  width: 4.8rem;
+  height: 4.8rem;
+  overflow: hidden;
+  border-radius: 50%;
   font-size: 1.65rem;
-  ${({ extraDay }) => extraDay && `color: #bbb`}
+  text-align: center;
+  ${({ isWeekend }) => isWeekend && "color: #8F9093;"};
+  ${({ extraDay }) => extraDay && "color: #ddd;"};
+  ${({ isToday }) => isToday && "background: #E9EAEF; color: #000;"};
+  cursor: pointer;
+  &:hover {
+    background: #e9eaef;
+  }
 `;
 
 const DaysItem = styled.div`
@@ -90,12 +106,13 @@ const DaysItem = styled.div`
   line-height: 3.6rem;
 `;
 
-const CurrDate = styled.div`
+const CurrDateArea = styled.div`
   padding: 1.5rem 0 1rem;
   text-align: center;
   font-size: 1.8rem;
 
   h3 {
+    margin: 0 2rem;
     display: inline-block;
     padding-bottom: 2px;
     border-bottom: 2px solid #238cee;

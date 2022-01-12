@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { IUserCalendar } from "interface";
-import { secondsSinceEpoch, getDateObjFromSeconds } from "core/firestore/timestamp";
+import { getDateObjFromSeconds, todaySec } from "core/firestore/timestamp";
 import { colors, Label, item__number, DateArea } from "./CalendarStyle";
 
 interface CalendarDateAreaProps {
@@ -9,13 +9,8 @@ interface CalendarDateAreaProps {
   extraDay?: boolean; // 이전달, 다음달 데이터인지 여부
 }
 
-// 00시 00분으로 초기화된 오늘 날짜
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-const todaySec = secondsSinceEpoch(today);
-
 const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => {
-  const isToday = useMemo(() => todaySec === sec, [sec]);
+  const isToday = useMemo(() => todaySec() === sec, [sec]);
   const { _m, _d, _day } = getDateObjFromSeconds(sec);
 
   return (

@@ -105,3 +105,10 @@ export const formatDate = (date: Date, fStr: string, utc?: boolean): string => {
     return ("0" + m).slice(-2);
   });
 };
+
+// 00시 00분으로 초기화된 오늘 날짜
+export const todaySec = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return secondsSinceEpoch(today);
+};

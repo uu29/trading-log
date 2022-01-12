@@ -176,10 +176,11 @@ export const CreateLink = styled.a`
 export const ControlBtn = styled.button<{ isNext?: boolean }>`
   width: 2rem;
   height: 2.4rem;
-  padding-top: 2px;
+  padding-top: 2px;   
   font-size: 1.6rem;
   color: #8f9093;
   transform: translateY(1px);
+  text-indent: -9999px;
 
   ${({ isNext }) =>
     isNext
