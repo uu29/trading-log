@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
@@ -6,8 +6,9 @@ import CalendarForm from "components/form/CalendarForm";
 import { formatDate } from "core/firestore/timestamp";
 
 const select_icon_style = css`
-  margin-top: 0.5rem;
-  float: right;
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.8rem;
 `;
 
 const number_input_style = css`
@@ -56,16 +57,23 @@ const onSubmit = (value) => {
 const Create = () => {
   const { form, handleChange } = useForm<IValue>({ initialValue, onSubmit });
   const [openCalendar, setOpenCalendar] = useState(false);
+
   const toggleDate = () => {
     setOpenCalendar(!openCalendar);
   };
+
   const closeCalendar = () => {
     setOpenCalendar(false);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+  };
+
   return (
     <FormWrap>
-      <form method="post">
+      <form method="post" onSubmit={handleSubmit}>
         <Label htmlFor="name">종목 이름</Label>
         <Input type="text" id="name" name="name" value={form.name} onChange={handleChange} className={form_input_style} />
         <Flex>
@@ -82,10 +90,15 @@ const Create = () => {
           </LeftColumn>
           <RightColumn>
             <Label htmlFor="sales">매도/매수</Label>
-            <SalesOptions className={form_input_style} salesType={form.sales}>
-              {form.sales}
-              <SelectBtn />
-            </SalesOptions>
+            <SelectBtn />
+            <SalesSelect className={form_input_style} salesType={form.sales} id="sales" name="sales" onChange={handleChange}>
+              <option value={SalesType.buy} selected={form.sales === SalesType.buy}>
+                {SalesType.buy}
+              </option>
+              <option value={SalesType.sell} selected={form.sales === SalesType.sell}>
+                {SalesType.sell}
+              </option>
+            </SalesSelect>
             <input type="text" id="sales" name="sales" value={form.sales} onChange={handleChange} hidden />
           </RightColumn>
         </Flex>
@@ -166,6 +179,9 @@ const Label = styled.label`
 
 const FormWrap = styled.div`
   margin: 0 2rem 1.6rem;
+  input {
+    color: #3b3e4a;
+  }
 `;
 
 const Input = styled.input`
@@ -178,14 +194,18 @@ const InputDate = styled.input`
   display: block;
   width: 100%;
   height: 6rem;
-  color: #5e5e5e;
   text-align: center;
   cursor: pointer;
 `;
 
-const SalesOptions = styled.div<{ salesType: SalesType }>`
+const SalesSelect = styled.select<{ salesType: SalesType }>`
+  width: 100%;
+  display: block;
   height: 6rem;
   color: ${({ salesType }) => (salesType === SalesType.sell ? "#F02828" : "#0778DF")};
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
 `;
 
 const Flex = styled.div`
@@ -193,6 +213,7 @@ const Flex = styled.div`
 `;
 
 const RightColumn = styled.div`
+  position: relative;
   flex: none;
   width: 22rem;
 `;
