@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styled from "@emotion/styled";
 import useFade from "hooks/useFade";
-import { keyframes } from "@emotion/css";
+import useSlide from "hooks/useSlide";
 
 export const ToastTypes = {
   fail: "fail",
@@ -26,52 +26,49 @@ const typesOption = {
 };
 
 const Toast = ({ id, message, destroy, type, duration = 3000 }: ToastProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isVisible, setShow: setShowToast, slideProps } = useSlide(true);
 
   useEffect(() => {
-    if (!duration) return;
+    if (!duration || !isVisible) return;
 
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 10);
-
-    const unsetOpenTimer = setTimeout(() => {
-      setIsOpen(false);
+    const timer = setTimeout(() => {
+      setShowToast(false);
     }, duration);
 
-    return () => clearTimeout(unsetOpenTimer);
-  }, [destroy, duration]);
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+    return () => clearTimeout(timer);
+  }, [setShowToast, duration, isVisible]);
 
   useEffect(() => {
-    if (isOpen) return;
-    const closeTimer = setTimeout(() => {
+    if (isVisible) return;
+    const timer = setTimeout(() => {
       destroy();
     }, 100);
-    return () => clearTimeout(closeTimer);
-  }, [isOpen, destroy]);
 
-  const { isVisible, setShow, fadeProps } = useFade(false);
+    return () => clearTimeout(timer);
+  }, [destroy, isVisible]);
+
+  const handleClose = () => {
+    setShowToast(false);
+  };
+
+  const { isVisible: isCloseBtnVisible, setShow: setShowCloseBtn, fadeProps } = useFade(false);
 
   const handleMouseEnter = () => {
-    setShow(true);
+    setShowCloseBtn(true);
   };
 
   const handleMouseLeave = () => {
-    setShow(false);
+    setShowCloseBtn(false);
   };
 
   return (
     <>
-      {isOpen && (
-        <ToastLayer data-id={id} isOpen={isOpen}>
+      {isVisible && (
+        <ToastLayer data-id={id} {...slideProps}>
           <ToastCont barColor={typesOption[type].color} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <TypeIcon iconSrc={typesOption[type].src} />
             {message}
-            {isVisible && <CloseBtn type="button" onClick={handleClose} {...fadeProps} />}
+            {isCloseBtnVisible && <CloseBtn type="button" onClick={handleClose} {...fadeProps} />}
           </ToastCont>
         </ToastLayer>
       )}
@@ -115,17 +112,7 @@ const ToastCont = styled.div<{ barColor: string }>`
   }
 `;
 
-const slideIn = keyframes`
-  0% { opacity: 0; transform: translateX(50%) translateZ(-20px); }
-  100% { opacity: 1; transform: translateX(0) translateZ(20px); }
-`;
-
-const slideOut = keyframes`
-  0% { opacity: 1; transform: translateX(0) translateZ(20px); }
-  100% { opacity: 0; transform: translateX(50%) translateZ(-20px); }
-`;
-
-const ToastLayer = styled.div<{ isOpen: boolean }>`
+const ToastLayer = styled.div`
   position: fixed;
   top: 11rem;
   right: 3rem;
@@ -133,7 +120,6 @@ const ToastLayer = styled.div<{ isOpen: boolean }>`
   overflow: hidden;
   border-radius: 3px;
   background: rgba(59, 62, 74, 0.9);
-  animation: ${({ isOpen }) => (isOpen ? slideIn : slideOut)} 0.3s;
 `;
 
 export default Toast;
