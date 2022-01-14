@@ -3,6 +3,7 @@ import Nav from "components/Nav";
 import Header from "components/Header";
 import styled from "@emotion/styled";
 import GlobalStyles from "styles/GlobalStyles";
+import ToastContainer from "components/common/toast/ToastContainer";
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -17,6 +18,7 @@ function App({ Component, pageProps }: AppProps) {
         </ComponentOuterWrap>
         {!pageProps.hideNav && <Nav />}
         <div id="modal"></div>
+        <ToastContainer />
       </OuterWrap>
     </>
   );

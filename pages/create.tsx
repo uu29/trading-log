@@ -5,6 +5,8 @@ import { cx, css } from "@emotion/css";
 import CalendarForm from "components/form/CalendarForm";
 import { formatDate } from "core/firestore/timestamp";
 import { setDocData } from "core/firestore";
+import { toast } from "@toast-controller";
+
 const COL_NAME = "user_trading_daily";
 
 const select_icon_style = css`
@@ -74,16 +76,17 @@ const Create = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const unique_key = form.stock_name;
+    toast.show({ message: "안녕하세요", type: "success" });
+    return;
     setDocData<ICreateParams>(COL_NAME, unique_key, form)
-      .then((res) => {
-        console.log("res!");
-        console.log(res);
+      .then(() => {
+        // 성공 처리
+        // 등록되었습니다. 이후 메인으로 돌아가기
       })
       .catch((err) => {
-        console.log("err!");
-        console.log(err);
-      })
-      .finally(() => console.log("end."));
+        // 에러 처리
+        // toast 알람 - 다시 시도해주세요.
+      });
   };
 
   return (
