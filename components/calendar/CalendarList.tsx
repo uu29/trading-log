@@ -55,7 +55,7 @@ const CalendarList = ({ listMap }: CalendarListProps) => {
   return (
     <ul>
       {keys.map((key) => (
-        <CalendarListItem key={key} dateList={listMap.get(key)} />
+        <CalendarListItem key={key} dateList={listMap.get(key) ?? []} />
       ))}
     </ul>
   );

@@ -12,6 +12,10 @@ const Home = () => {
   const [data, setData] = useState<ITradingDailyLog[]>([]);
 
   useEffect(() => {
+    console.log(error);
+  }, [error]);
+
+  useEffect(() => {
     fetchData<ITradingDailyLog>(trading_collection)
       .then((res) => setData(res))
       .catch((err) => setError(err));

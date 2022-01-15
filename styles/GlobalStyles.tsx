@@ -1,6 +1,6 @@
 import { css, Global } from "@emotion/react";
 
-const GlobalStyles = (props) => {
+const GlobalStyles = (props: any) => {
   return (
     <Global
       styles={css`

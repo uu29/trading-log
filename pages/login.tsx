@@ -50,7 +50,7 @@ const checkDuplicate = async (email: string): AsyncBool => {
   return Boolean(querySnapshot.size > 0);
 };
 
-const successCb = async (profileObj) => {
+const successCb = async (profileObj: any) => {
   if (!profileObj) return;
   const { email, name } = profileObj;
   checkDuplicate(email).then((is_duplicate) => {
@@ -78,11 +78,11 @@ const successCb = async (profileObj) => {
 };
 
 const GoogleBtn = () => {
-  const responseGoogle = async (response) => {
+  const responseGoogle = async (response: any) => {
     successCb(response.profileObj);
   };
 
-  const failureGoogle = ({ error, details }) => {
+  const failureGoogle = ({ error, details }: any) => {
     console.log("[failure]");
     console.log(error);
     console.log(details);
@@ -90,7 +90,7 @@ const GoogleBtn = () => {
 
   return (
     <GoogleLogin
-      clientId={process.env.NEXT_PUBLIC_GOOGLE_OAUTH_KEY}
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_OAUTH_KEY ?? ""}
       render={(renderProps) => (
         <button type="button" className={cx(login__btn, btn__google)} onClick={renderProps.onClick} disabled={renderProps.disabled}>
           <span className={login__logo}>

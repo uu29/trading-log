@@ -5,7 +5,7 @@ import { IFullDateObj } from "interface";
 const oneDayMilliSeconds = 86400;
 
 // Date obj to seconds number
-export const secondsSinceEpoch = (d) => Math.floor(d / 1000);
+export const secondsSinceEpoch = (d: any) => Math.floor(d / 1000);
 
 // 시작 날짜부터 마지막 날짜까지 하루씩 더한 날짜들의 배열(seconds 데이터)
 export const getDateRangeByDay = (startDate: number, lastDate: number): number[] => {
@@ -79,30 +79,30 @@ export const getTimestampSecFromNumber = (_y: number, _m: number, _d: number) =>
 // 데이트 포맷
 export const formatDate = (date: Date, fStr: string, utc?: boolean): string => {
   const _utc = utc ? "getUTC" : "get";
-  return fStr.replace(/%[YmdHMS]/g, function (m) {
-    switch (m) {
+  return fStr.replace(/%[YmdHMS]/g, (str) => {
+    switch (str) {
       case "%Y":
-        return date[_utc + "FullYear"](); // no leading zeros required
+        return date[`${_utc}FullYear`]().toString(); // no leading zeros required
       case "%m":
-        m = 1 + date[_utc + "Month"]();
+        str = (1 + date[`${_utc}Month`]()).toString();
         break;
       case "%d":
-        m = date[_utc + "Date"]();
+        str = date[`${_utc}Date`]().toString();
         break;
       case "%H":
-        m = date[_utc + "Hours"]();
+        str = date[`${_utc}Hours`]().toString();
         break;
       case "%M":
-        m = date[_utc + "Minutes"]();
+        str = date[`${_utc}Minutes`]().toString();
         break;
       case "%S":
-        m = date[_utc + "Seconds"]();
+        str = date[`${_utc}Seconds`]().toString();
         break;
       default:
-        return m.slice(1); // unknown code, remove %
+        return str.slice(1); // unknown code, remove %
     }
     // add leading zero if required
-    return ("0" + m).slice(-2);
+    return ("0" + str).slice(-2);
   });
 };
 

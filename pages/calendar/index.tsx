@@ -28,7 +28,7 @@ const Calendar = () => {
         res.forEach((curr) => {
           const timestampSec = curr.date.seconds;
           if (map.has(timestampSec)) {
-            map.set(timestampSec, [...map.get(timestampSec), curr]);
+            map.set(timestampSec, [...(map.get(timestampSec) ?? []), curr]);
           } else map.set(timestampSec, [curr]);
         });
         setCalendarMap(map);
@@ -69,7 +69,7 @@ const Calendar = () => {
         </CalendarGridWrap>
         <CalendarGridWrap>
           {secondsFromEpoch.map((sec) => (
-            <CalendarDateArea key={sec} sec={sec} calData={getCalDate(sec)} extraDay={checkExtraDay(sec)} />
+            <CalendarDateArea key={sec} sec={sec} calData={getCalDate(sec) ?? []} extraDay={checkExtraDay(sec)} />
           ))}
         </CalendarGridWrap>
       </CalLayer>

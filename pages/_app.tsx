@@ -17,7 +17,6 @@ function App({ Component, pageProps }: AppProps) {
           </ComponentInnerWrap>
         </ComponentOuterWrap>
         {!pageProps.hideNav && <Nav />}
-        <div id="modal"></div>
         <ToastContainer />
       </OuterWrap>
     </>
