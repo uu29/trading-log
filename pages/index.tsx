@@ -22,7 +22,7 @@ const Home = () => {
   }, []);
 
   return (
-    <section>
+    <Section>
       <SearchBar />
       <ul>
         {data.map((t, i) => (
@@ -33,7 +33,7 @@ const Home = () => {
               <span>
                 <strong>{t.stock_amount}</strong>주
               </span>
-              <Date>{getDateStrFromTimestamp(t.reg_date)}</Date>
+              <Date>{getDateStrFromTimestamp(t.trading_date)}</Date>
             </ListBottom>
           </List>
         ))}
@@ -41,9 +41,15 @@ const Home = () => {
       <Link href="/create" passHref>
         <StyledA>작성하기</StyledA>
       </Link>
-    </section>
+    </Section>
   );
 };
+
+const Section = styled.section`
+  flex: 1 0 0;
+  position: relative;
+  max-width: 76.8rem;
+`;
 
 const StyledA = styled.a`
   margin: 1.6rem;

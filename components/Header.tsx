@@ -1,14 +1,17 @@
 import styled from "@emotion/styled";
+import Link from "next/link";
 import { Logo } from "svgs";
 
 const Header = () => (
   <Hd>
-    <H1Wrap>
-      <LgWrap>
-        <Logo />
-      </LgWrap>
-      <H1>개미 매매일지</H1>
-    </H1Wrap>
+    <Link href="/" passHref>
+      <H1Wrap>
+        <LgWrap>
+          <Logo />
+        </LgWrap>
+        <H1>개미 매매일지</H1>
+      </H1Wrap>
+    </Link>
   </Hd>
 );
 
@@ -18,7 +21,8 @@ const Hd = styled.header`
   background: #e9eaef;
 `;
 
-const H1Wrap = styled.div`
+const H1Wrap = styled.a`
+  display: inline-block;
   padding: 1.5rem;
   font-size: 2.8rem;
 `;

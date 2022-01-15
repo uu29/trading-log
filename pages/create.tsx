@@ -4,10 +4,11 @@ import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import CalendarForm from "components/form/CalendarForm";
-import { formatDate } from "core/firestore/timestamp";
+import { formatDate, strDateToTimestamp } from "core/firestore/timestamp";
 import { setDocData } from "core/firestore";
 import { toast } from "@toast-controller";
 import LoadingOverlay from "components/common/loading/LoadingOverlay";
+import { Timestamp } from "@firebase/firestore";
 
 const COL_NAME = "user_trading_daily";
 
@@ -45,13 +46,20 @@ const TradingType = {
 
 type TradingType = typeof TradingType[keyof typeof TradingType];
 
-interface ICreateParams {
+interface IDefaultParams {
   stock_name: string;
   trading_type: TradingType;
-  trading_date: string;
   stock_amount: number;
   price: number;
   description: string;
+}
+
+interface ICreateParams extends IDefaultParams {
+  trading_date: string;
+}
+
+interface IForm extends IDefaultParams {
+  trading_date: Timestamp;
 }
 
 const initialValue: ICreateParams = {
@@ -79,10 +87,16 @@ const Create = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const new_form: IForm = {
+      ...form,
+      trading_date: strDateToTimestamp(form.trading_date),
+    };
+
     if (submitting) return;
     setSubmitting(true);
     const unique_key = form.stock_name;
-    setDocData<ICreateParams>(COL_NAME, unique_key, form)
+    setDocData<IForm>(COL_NAME, unique_key, new_form)
       .then(() => {
         toast.show({ message: "등록되었습니다.", type: "success" });
         initForm();
