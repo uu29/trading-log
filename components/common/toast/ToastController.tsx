@@ -1,4 +1,3 @@
-// 새 토스트 메세지를 작성하고 기존 메세지를 제거하는 클래스
 import ReactDOM from "react-dom";
 import Toast, { ToastType, ToastProps } from "./Toast";
 
@@ -14,11 +13,12 @@ export class ToastController {
   private toasts: ToastProps[] = [];
 
   public insertBodyContainer() {
-    const body = document.getElementById("toast-container") as HTMLElement;
-    const toastContainer = document.createElement("div");
-    toastContainer.id = "toast-container-main";
-    body.insertAdjacentElement("beforeend", toastContainer);
-    this.containerRef = toastContainer;
+    const toastContainer = document.getElementById("toast-container") as HTMLDivElement;
+    toastContainer.setAttribute("style", "position: fixed; right: 0; top: 0;");
+    const toastBackground = document.createElement("div");
+    toastBackground.setAttribute("style", "position: relative; right: 3rem; top: 11rem;");
+    toastContainer.insertAdjacentElement("beforeend", toastBackground);
+    this.containerRef = toastBackground;
   }
 
   public show(options: ToastOptions) {

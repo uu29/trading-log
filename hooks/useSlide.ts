@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { keyframes } from "@emotion/css";
 
 const slideIn = keyframes`
-  0% { opacity: 0; transform: translateX(50%) translateZ(-20px); }
+  0% { opacity: 0; transform: translateX(80%) translateZ(-20px); }
   100% { opacity: 1; transform: translateX(0) translateZ(20px); }
 `;
 
 const slideOut = keyframes`
   0% { opacity: 1; transform: translateX(0) translateZ(20px); }
-  100% { opacity: 0; transform: translateX(50%) translateZ(-20px); }
+  100% { opacity: 0; transform: translateX(80%) translateZ(-20px); }
 `;
 
 const useSlide = (initial: boolean, delay?: string) => {

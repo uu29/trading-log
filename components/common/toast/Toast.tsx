@@ -28,6 +28,7 @@ const typesOption = {
 const Toast = ({ id, message, destroy, type, duration = 3000 }: ToastProps) => {
   const { isVisible, setShow: setShowToast, slideProps } = useSlide(true);
 
+  // slideOut 효과 (duration 동안)
   useEffect(() => {
     if (!duration || !isVisible) return;
 
@@ -38,6 +39,7 @@ const Toast = ({ id, message, destroy, type, duration = 3000 }: ToastProps) => {
     return () => clearTimeout(timer);
   }, [setShowToast, duration, isVisible]);
 
+  // slideOut 효과 이후 destroy
   useEffect(() => {
     if (isVisible) return;
     const timer = setTimeout(() => {
@@ -113,13 +115,12 @@ const ToastCont = styled.div<{ barColor: string }>`
 `;
 
 const ToastLayer = styled.div`
-  position: fixed;
-  top: 11rem;
-  right: 3rem;
+  margin-bottom: 5px;
   min-width: 28rem;
   overflow: hidden;
   border-radius: 3px;
   background: rgba(59, 62, 74, 0.9);
+  transition: all 0.3s;
 `;
 
 export default Toast;
