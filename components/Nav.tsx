@@ -41,6 +41,7 @@ const Nav = () => {
 
 const NavWrap = styled.nav`
   position: fixed;
+  z-index: 10;
   width: 100%;
   left: 0;
   bottom: 0;

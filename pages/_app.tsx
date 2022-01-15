@@ -34,17 +34,18 @@ const OuterWrap = styled.div`
 `;
 
 const ComponentOuterWrap = styled.div`
+  position: relative;
   flex: 1 0 0;
   width: 100%;
   overflow-y: auto;
 `;
 
 const ComponentInnerWrap = styled.div`
-  max-width: 76.8rem;
   margin: auto;
+  padding: 0 1.6rem;
+  max-width: 76.8rem;
   min-height: calc(100vh - 5.4rem - 9.6rem);
   overflow-y: auto;
-  position: relative;
 `;
 
 export default App;

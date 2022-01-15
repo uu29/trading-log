@@ -13,6 +13,8 @@ const Header = () => (
 );
 
 const Hd = styled.header`
+  position: relative;
+  z-index: 10;
   text-align: center;
   border-bottom: 2px solid #dee0e9;
 `;

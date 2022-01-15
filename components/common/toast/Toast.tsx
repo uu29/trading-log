@@ -102,6 +102,7 @@ const ToastCont = styled.div<{ barColor: string }>`
   padding: 1rem 1rem 1rem 1.3rem;
   color: #f3f4f5;
   line-height: 2.4rem;
+  font-size: 1.5rem;
 
   &::after {
     content: "";

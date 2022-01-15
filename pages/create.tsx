@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
@@ -6,6 +7,7 @@ import CalendarForm from "components/form/CalendarForm";
 import { formatDate } from "core/firestore/timestamp";
 import { setDocData } from "core/firestore";
 import { toast } from "@toast-controller";
+import LoadingOverlay from "components/common/loading/LoadingOverlay";
 
 const COL_NAME = "user_trading_daily";
 
@@ -62,8 +64,10 @@ const initialValue: ICreateParams = {
 };
 
 const Create = () => {
-  const { form, handleChange } = useForm<ICreateParams>({ initialValue });
+  const router = useRouter();
+  const { form, handleChange, initForm } = useForm<ICreateParams>({ initialValue });
   const [openCalendar, setOpenCalendar] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const toggleDate = () => {
     setOpenCalendar(!openCalendar);
@@ -75,22 +79,26 @@ const Create = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     const unique_key = form.stock_name;
-    toast.show({ message: "안녕하세요", type: "success" });
-    return;
     setDocData<ICreateParams>(COL_NAME, unique_key, form)
       .then(() => {
-        // 성공 처리
-        // 등록되었습니다. 이후 메인으로 돌아가기
+        toast.show({ message: "등록되었습니다.", type: "success" });
+        initForm();
+        router.push("/");
       })
       .catch((err) => {
-        // 에러 처리
-        // toast 알람 - 다시 시도해주세요.
+        toast.show({ message: "등록 실패. 다시 시도해주세요.", type: "fail" });
+      })
+      .finally(() => {
+        setSubmitting(false);
       });
   };
 
   return (
     <FormWrap>
+      {submitting && <LoadingOverlay msg="등록중" />}
       <form method="post" onSubmit={handleSubmit}>
         <Label htmlFor="stock_name">종목 이름</Label>
         <Input type="text" id="stock_name" name="stock_name" value={form.stock_name} onChange={handleChange} className={form_input_style} />
@@ -218,7 +226,7 @@ const Label = styled.label`
 `;
 
 const FormWrap = styled.div`
-  margin: 0 2rem 1.6rem;
+  margin: 0 0 1.6rem;
   input {
     color: #3b3e4a;
   }
