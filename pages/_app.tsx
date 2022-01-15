@@ -9,8 +9,8 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyles />
+      <Header />
       <OuterWrap>
-        <Header />
         <ComponentOuterWrap>
           <ComponentInnerWrap>
             <Component {...pageProps} />
@@ -26,9 +26,8 @@ function App({ Component, pageProps }: AppProps) {
 const OuterWrap = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 5.4rem);
   overflow: hidden;
-  padding-bottom: 5.4rem;
   background-color: #e9eaef;
 `;
 
@@ -43,7 +42,7 @@ const ComponentInnerWrap = styled.div`
   margin: auto;
   padding: 0 1.6rem;
   max-width: 76.8rem;
-  min-height: calc(100vh - 5.4rem - 9.6rem);
+  min-height: calc(100vh - 5.4rem);
   overflow-y: auto;
 `;
 
