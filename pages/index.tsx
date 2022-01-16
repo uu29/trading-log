@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { State } from "store/slices";
 import styled from "@emotion/styled";
-import SearchBar from "components/SearchBar";
+import SearchBar from "components/common/SearchBar";
 import Link from "next/link";
 import { fetchData } from "core/firestore";
 import { formatDate } from "core/firestore/timestamp";
@@ -50,14 +50,18 @@ const Home = () => {
       <ul>
         {displayData.map((t, i) => (
           <List key={i}>
-            <h2>{t.stock_name}</h2>
-            <ListBottom>
-              <PriceText salesType={t.trading_type as TradingType}>{numberWithCommas(t.price)}</PriceText>
-              <span>
-                <CountText>{t.stock_amount}</CountText>주
-              </span>
-              <DateText>{formatDate(t.trading_date.toDate(), "%Y/%m/%d")}</DateText>
-            </ListBottom>
+            <Link href={{ pathname: "/[stock_name]", query: { stock_name: t.stock_name } }} passHref>
+              <ListA>
+                <StockName>{t.stock_name}</StockName>
+                <ListBottom>
+                  <PriceText salesType={t.trading_type as TradingType}>{numberWithCommas(t.price)}</PriceText>
+                  <span>
+                    <CountText>{t.stock_amount}</CountText>주
+                  </span>
+                  <DateText>{formatDate(t.trading_date.toDate(), "%Y/%m/%d")}</DateText>
+                </ListBottom>
+              </ListA>
+            </Link>
           </List>
         ))}
       </ul>
@@ -70,6 +74,10 @@ const Home = () => {
 
 const Section = styled.section`
   flex: 1 0 0;
+`;
+
+const ListA = styled.a`
+  display: block;
 `;
 
 const StyledA = styled.a`
@@ -97,15 +105,11 @@ const List = styled.li`
   padding: 1.6rem;
   border-radius: 1.2rem;
   background: #fff;
+`;
 
-  > h2 {
-    font-weight: 600;
-    font-size: 2.4rem;
-  }
-  strong {
-    font-size: 2.2rem;
-    font-weight: 600;
-  }
+const StockName = styled.h2`
+  font-weight: 600;
+  font-size: 2.4rem;
 `;
 
 const CountText = styled.em`
@@ -116,6 +120,8 @@ const CountText = styled.em`
 `;
 
 const PriceText = styled.strong<{ salesType: TradingType }>`
+  font-size: 2.2rem;
+  font-weight: 600;
   margin-right: 1.6rem;
   color: ${({ salesType }) => (salesType === TradingTypes.sell ? "#F02828" : "#0778DF")};
 `;

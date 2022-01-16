@@ -1,7 +1,7 @@
 import { AppProps } from "next/app";
 import wrapper from "store";
-import Nav from "components/Nav";
-import Header from "components/Header";
+import Nav from "components/common/Nav";
+import Header from "components/common/Header";
 import styled from "@emotion/styled";
 import GlobalStyles from "styles/GlobalStyles";
 import ToastContainer from "components/common/toast/ToastContainer";

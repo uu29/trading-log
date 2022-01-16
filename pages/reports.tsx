@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import SearchBar from "components/SearchBar";
-import AddBtn from "components/AddBtn";
+import SearchBar from "components/common/SearchBar";
+import AddBtn from "components/common/AddBtn";
 import { IconDollar, IconWon } from "svgs";
 
 const data = [
