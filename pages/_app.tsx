@@ -42,8 +42,6 @@ const ComponentInnerWrap = styled.div`
   margin: auto;
   padding: 0 1.6rem;
   max-width: 76.8rem;
-  min-height: calc(100vh - 5.4rem - 9.6rem);
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
 `;

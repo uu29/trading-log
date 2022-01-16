@@ -17,7 +17,7 @@ const SearchBar = () => {
 };
 
 const BarWrap = styled.div`
-  margin: 1.6rem;
+  margin: 1.6rem 0;
   background: #dadce2;
   display: flex;
   align-items: center;

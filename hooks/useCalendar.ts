@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { getDateRangeByDay, secondsSinceEpoch } from "core/firestore/timestamp";
+import { getDateRangeByDay, secondsSinceEpoch, todaySec } from "core/firestore/timestamp";
 
 // 현재 날짜의 연, 월 구하는 함수
 const getYM = (year: number, month: number) => {
@@ -32,6 +32,7 @@ const useCalendar = (start_date_sec?: number, end_date_sec?: number) => {
   const [firstDateSec, setFirstDateSec] = useState(0); // 이번달 첫째 날의 seconds date
   const [lastDateSec, setLastDateSec] = useState(0); // 이번달 마지막 날의 seconds date
   const [secondsFromEpoch, setSecondsFromEpoch] = useState<number[]>([]);
+  const [selectedDate, setSeletedDate] = useState(todaySec()); // 선택된 날짜 (default = 0시 00분으로 초기화된 오늘 날짜)
   const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
 
   const setPrevMonth = () => {
@@ -99,6 +100,8 @@ const useCalendar = (start_date_sec?: number, end_date_sec?: number) => {
     secondsFromEpoch,
     checkExtraDay,
     daysKr,
+    selectedDate,
+    setSeletedDate
   };
 };
 export default useCalendar;

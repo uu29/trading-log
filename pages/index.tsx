@@ -48,16 +48,15 @@ const Home = () => {
 const Section = styled.section`
   flex: 1 0 0;
   position: relative;
-  max-width: 76.8rem;
 `;
 
 const StyledA = styled.a`
-  margin: 1.6rem;
+  margin: 1.6rem 0;
   position: absolute;
   z-index: 1;
   left: 0;
   bottom: 0;
-  width: calc(100% - 3.2rem);
+  width: 100%;
   display: block;
   height: 6rem;
   line-height: 6rem;
@@ -74,7 +73,7 @@ const StyledA = styled.a`
 `;
 
 const List = styled.li`
-  margin: 1.6rem;
+  margin: 1.6rem 0;
   border: 1px solid #dee0e9;
   padding: 1.6rem;
   border-radius: 1.2rem;

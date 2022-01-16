@@ -142,6 +142,7 @@ const Create = () => {
             <SalesSelect
               className={form_input_style}
               salesType={form.trading_type}
+              value={form.trading_type}
               id="trading_type"
               name="trading_type"
               onChange={handleChange}
@@ -209,6 +210,7 @@ const CalIcon = styled.div`
 
 const CalendarBg = styled.div`
   position: fixed;
+  z-index: 11;
   width: 100%;
   height: 100%;
   left: 0;

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useCalendar from "hooks/useCalendar";
 import styled from "@emotion/styled";
 import { getDateObjFromSeconds, todaySec } from "core/firestore/timestamp";
@@ -7,23 +7,37 @@ import { CalendarGridWrap, ControlBtn } from "components/calendar/CalendarStyle"
 interface FormDateAreaProps {
   sec: number;
   extraDay: boolean;
+  selectedDate: number;
+  handleClickDateItem: (sec: number) => void;
 }
 
-const FormDateArea = ({ sec, extraDay }: FormDateAreaProps) => {
+const FormDateArea = ({ sec, extraDay, selectedDate, handleClickDateItem }: FormDateAreaProps) => {
   const isToday = useMemo(() => todaySec() === sec, [sec]);
 
   const { _day } = getDateObjFromSeconds(sec);
   const date = new Date(sec * 1000).getDate();
 
   return (
-    <DateItem extraDay={extraDay} isToday={isToday} isWeekend={_day === 0 || _day === 6}>
+    <DateItem
+      extraDay={extraDay}
+      isToday={isToday}
+      isSelected={sec === selectedDate}
+      isWeekend={_day === 0 || _day === 6}
+      onClick={() => handleClickDateItem(sec)}
+    >
       {date}
     </DateItem>
   );
 };
 
 const CalendarForm = () => {
-  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay } = useCalendar();
+  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay, selectedDate, setSeletedDate } = useCalendar();
+  const handleClickDateItem = useCallback(
+    (sec: number) => {
+      setSeletedDate(sec);
+    },
+    [setSeletedDate]
+  );
 
   return (
     <CalendarFormWrap>
@@ -49,7 +63,13 @@ const CalendarForm = () => {
         </CalendarGridWrap>
         <CalendarGridWrap>
           {secondsFromEpoch.map((sec) => (
-            <FormDateArea key={sec} sec={sec} extraDay={checkExtraDay(sec)} />
+            <FormDateArea
+              key={sec}
+              sec={sec}
+              extraDay={checkExtraDay(sec)}
+              selectedDate={selectedDate}
+              handleClickDateItem={handleClickDateItem}
+            />
           ))}
         </CalendarGridWrap>
       </CalendarFormLayer>
@@ -60,7 +80,7 @@ const CalendarForm = () => {
 const CalendarFormWrap = styled.div`
   position: absolute;
   width: 100%;
-  z-index: 1;
+  z-index: 100;
   left: 0;
   top: 12rem;
   background: #fff;
@@ -76,7 +96,7 @@ const CalendarFormLayer = styled.article`
   padding-bottom: 0.5rem;
 `;
 
-const DateItem = styled.div<{ extraDay: boolean; isToday: boolean; isWeekend: boolean }>`
+const DateItem = styled.div<{ extraDay: boolean; isToday: boolean; isSelected: boolean; isWeekend: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,9 +110,11 @@ const DateItem = styled.div<{ extraDay: boolean; isToday: boolean; isWeekend: bo
   ${({ isWeekend }) => isWeekend && "color: #8F9093;"};
   ${({ extraDay }) => extraDay && "color: #ddd;"};
   ${({ isToday }) => isToday && "background: #E9EAEF; color: #000;"};
+  ${({ isSelected }) => isSelected && "background: #2D96F6; color: #fff;"};
   cursor: pointer;
   &:hover {
     background: #e9eaef;
+    ${({ isSelected }) => isSelected && `background: #238CEE;`}
   }
 `;
 
