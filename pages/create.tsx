@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
@@ -76,6 +76,7 @@ const Create = () => {
   const { form, updateForm, handleChange, initForm } = useForm<ICreateParams>({ initialForm });
   const [openCalendar, setOpenCalendar] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const initDateSec = useMemo(() => strDateToTimestamp(form.trading_date).seconds, [form.trading_date]);
 
   const changeDateCb = useCallback(
     (sec: number) => {
@@ -139,7 +140,7 @@ const Create = () => {
             />
             {openCalendar && (
               <>
-                <CalendarForm changeDateCb={changeDateCb} initDateSec={strDateToTimestamp(form.trading_date).seconds} />
+                <CalendarForm changeDateCb={changeDateCb} initDateSec={initDateSec} />
                 <CalendarBg onClick={closeCalendar} />
               </>
             )}

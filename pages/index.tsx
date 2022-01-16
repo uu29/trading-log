@@ -52,10 +52,12 @@ const Section = styled.section`
 
 const StyledA = styled.a`
   margin: 1.6rem 0;
-  position: absolute;
+  max-width: 76.8rem;
+  position: fixed;
   z-index: 1;
-  left: 0;
-  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 5.4rem;
   width: 100%;
   display: block;
   height: 6rem;

@@ -36,15 +36,15 @@ const ComponentOuterWrap = styled.div`
   position: relative;
   flex: 1 0 0;
   width: 100%;
-  overflow-y: auto;
+  margin-bottom: 5.4rem;
 `;
 
 const ComponentInnerWrap = styled.div`
-  margin: auto;
-  padding: 0 1.6rem;
-  max-width: 76.8rem;
   display: flex;
   flex-direction: column;
+  margin: auto;
+  max-width: 76.8rem;
+  height: 100%;
 `;
 
 export default wrapper.withRedux(App);
