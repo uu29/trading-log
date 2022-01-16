@@ -35,6 +35,13 @@ const useCalendar = (init_date_sec?: number, start_date_sec?: number, end_date_s
   const [seletedDateSec, setSeletedDateSec] = useState(init_date_sec ?? todaySec()); // 선택된 날짜 (default = 0시 00분으로 초기화된 오늘 날짜)
   const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
 
+  useEffect(() => {
+    if (typeof init_date_sec === "undefined") return;
+    const initDate = new Date(init_date_sec * 1000);
+    setCurrYear(initDate.getFullYear());
+    setCurrMonth(initDate.getMonth());
+  }, [init_date_sec]);
+
   const setPrevMonth = () => {
     if (currMonth > 0) setCurrMonth(currMonth - 1);
     else {
