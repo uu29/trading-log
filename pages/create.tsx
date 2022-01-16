@@ -73,17 +73,16 @@ const initialForm: ICreateParams = {
 
 const Create = () => {
   const router = useRouter();
-  const { form, setForm, handleChange, initForm } = useForm<ICreateParams>({ initialForm });
+  const { form, updateForm, handleChange, initForm } = useForm<ICreateParams>({ initialForm });
   const [openCalendar, setOpenCalendar] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const changeDateCb = useCallback(
     (sec: number) => {
       const changedDate = formatDate(new Date(sec * 1000), "%Y/%m/%d");
-      console.log(changedDate);
-      setForm({ ...form, trading_date: changedDate });
+      updateForm({ trading_date: changedDate });
     },
-    [form, setForm]
+    [updateForm]
   );
 
   const toggleDate = () => {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useMemo } from "react";
 import useCalendar from "hooks/useCalendar";
 import styled from "@emotion/styled";
 import { getDateObjFromSeconds, todaySec } from "core/firestore/timestamp";
@@ -40,13 +40,10 @@ const CalendarForm = ({ changeDateCb }: CalendarFormProps) => {
   const handleClickDateItem = useCallback(
     (sec: number) => {
       setSeletedDateSec(sec);
+      changeDateCb(sec);
     },
-    [setSeletedDateSec]
+    [setSeletedDateSec, changeDateCb]
   );
-
-  useEffect(() => {
-    changeDateCb(seletedDateSec);
-  }, [seletedDateSec, changeDateCb]);
 
   return (
     <CalendarFormWrap>

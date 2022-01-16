@@ -12,9 +12,13 @@ export default function useForm<T>({ initialForm }: FormTypes<T>) {
     setForm({ ...form, [name]: value });
   };
 
+  const updateForm = (obj: any) => {
+    setForm({ ...form, ...obj });
+  };
+
   const initForm = () => {
     setForm(initialForm);
   };
 
-  return { form, setForm, handleChange, initForm };
+  return { form, updateForm, handleChange, initForm };
 }
