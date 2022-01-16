@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { State } from "store/slices";
 import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import Link from "next/link";
@@ -10,8 +12,10 @@ import { TradingType, TradingTypes } from "interface";
 const trading_collection = "user_trading_daily";
 
 const Home = () => {
+  const searchQuery = useSelector((state: State) => state.main.search_query);
   const [error, setError] = useState();
   const [data, setData] = useState<ITradingDailyLog[]>([]);
+  const [displayData, setDisplayData] = useState<ITradingDailyLog[]>([]);
 
   useEffect(() => {
     console.log(error);
@@ -23,11 +27,28 @@ const Home = () => {
       .catch((err) => setError(err));
   }, []);
 
+  useEffect(() => {
+    setDisplayData(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const queryData = displayData.filter((d) => d.stock_name.indexOf(searchQuery) > -1);
+      if (queryData.length > 0) setDisplayData(queryData);
+    } else {
+      setDisplayData(data);
+    }
+    () => {
+      setDisplayData(data);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
+
   return (
     <Section>
       <SearchBar />
       <ul>
-        {data.map((t, i) => (
+        {displayData.map((t, i) => (
           <List key={i}>
             <h2>{t.stock_name}</h2>
             <ListBottom>

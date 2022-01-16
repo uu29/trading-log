@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "noUnusedLocals": true,
+    "noUnusedParameters": false,
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",

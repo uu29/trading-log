@@ -1,3 +1,3 @@
 export interface IMainState {
-  selected_trading_date: string;
+  search_query: string;
 }

@@ -40,7 +40,6 @@ const form_input_style = css`
   font-size: 2.4rem;
 `;
 
-
 interface IDefaultParams {
   stock_name: string;
   trading_type: TradingType;
@@ -106,7 +105,7 @@ const Create = () => {
         initForm();
         router.push("/");
       })
-      .catch((err) => {
+      .catch(() => {
         toast.show({ message: "등록 실패. 다시 시도해주세요.", type: "fail" });
       })
       .finally(() => {

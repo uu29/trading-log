@@ -1,17 +1,25 @@
 import styled from "@emotion/styled";
 import useForm from "hooks/useForm";
+import { mainSlice } from "store/slices/main";
+import { useDispatch } from "react-redux";
 
-interface IValue {
-  text: string;
+interface ISearchForm {
+  query: string;
 }
-const initialForm: IValue = { text: "" };
+const initialForm: ISearchForm = { query: "" };
 
 const SearchBar = () => {
-  const { form, handleChange } = useForm<IValue>({ initialForm });
+  const dispatch = useDispatch();
+  const changeCb = (form: ISearchForm) => {
+    dispatch(mainSlice.actions.setSearchQuery(form.query));
+  };
+
+  const { form, handleChange } = useForm<ISearchForm>({ initialForm, changeFormCb: changeCb });
+
   return (
     <BarWrap>
-      <IcSearch />
-      <input type="text" name="text" value={form.text} placeholder="검색하세요" onChange={handleChange} />
+      <IconSearch />
+      <input type="query" name="query" value={form.query} placeholder="검색하세요" onChange={handleChange} />
     </BarWrap>
   );
 };
@@ -37,7 +45,7 @@ const BarWrap = styled.div`
   }
 `;
 
-const IcSearch = styled.div`
+const IconSearch = styled.div`
   margin: 0 0.8rem;
   width: 2.8rem;
   height: 2.8rem;
