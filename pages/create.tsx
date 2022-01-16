@@ -9,6 +9,7 @@ import { setDocData } from "core/firestore";
 import { toast } from "@toast-controller";
 import LoadingOverlay from "components/common/loading/LoadingOverlay";
 import { Timestamp } from "@firebase/firestore";
+import { TradingType, TradingTypes } from "interface";
 
 const COL_NAME = "user_trading_daily";
 
@@ -39,12 +40,6 @@ const form_input_style = css`
   font-size: 2.4rem;
 `;
 
-const TradingType = {
-  sell: "매수",
-  buy: "매도",
-} as const;
-
-type TradingType = typeof TradingType[keyof typeof TradingType];
 
 interface IDefaultParams {
   stock_name: string;
@@ -64,7 +59,7 @@ interface IForm extends IDefaultParams {
 
 const initialForm: ICreateParams = {
   stock_name: "",
-  trading_type: TradingType.sell,
+  trading_type: TradingTypes.sell,
   trading_date: formatDate(new Date(), "%Y/%m/%d"),
   stock_amount: 0,
   price: 0,
@@ -156,8 +151,8 @@ const Create = () => {
               name="trading_type"
               onChange={handleChange}
             >
-              <option value={TradingType.buy}>{TradingType.buy}</option>
-              <option value={TradingType.sell}>{TradingType.sell}</option>
+              <option value={TradingTypes.buy}>{TradingTypes.buy}</option>
+              <option value={TradingTypes.sell}>{TradingTypes.sell}</option>
             </SalesSelect>
             <input type="text" id="trading_type" name="trading_type" value={form.trading_type} onChange={handleChange} hidden />
           </RightColumn>
@@ -271,7 +266,7 @@ const SalesSelect = styled.select<{ salesType: TradingType }>`
   width: 100%;
   display: block;
   height: 6rem;
-  color: ${({ salesType }) => (salesType === TradingType.sell ? "#F02828" : "#0778DF")};
+  color: ${({ salesType }) => (salesType === TradingTypes.sell ? "#F02828" : "#0778DF")};
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;

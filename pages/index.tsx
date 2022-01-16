@@ -3,8 +3,10 @@ import styled from "@emotion/styled";
 import SearchBar from "components/SearchBar";
 import Link from "next/link";
 import { fetchData } from "core/firestore";
-import { getDateStrFromTimestamp } from "core/firestore/timestamp";
+import { formatDate } from "core/firestore/timestamp";
+import { numberWithCommas } from "lib/common";
 import { ITradingDailyLog } from "interface";
+import { TradingType, TradingTypes } from "interface";
 const trading_collection = "user_trading_daily";
 
 const Home = () => {
@@ -29,11 +31,11 @@ const Home = () => {
           <List key={i}>
             <h2>{t.stock_name}</h2>
             <ListBottom>
-              <Price>{t.price}</Price>
+              <PriceText salesType={t.trading_type as TradingType}>{numberWithCommas(t.price)}</PriceText>
               <span>
-                <strong>{t.stock_amount}</strong>주
+                <CountText>{t.stock_amount}</CountText>주
               </span>
-              <Date>{getDateStrFromTimestamp(t.trading_date)}</Date>
+              <DateText>{formatDate(t.trading_date.toDate(), "%Y/%m/%d")}</DateText>
             </ListBottom>
           </List>
         ))}
@@ -47,30 +49,24 @@ const Home = () => {
 
 const Section = styled.section`
   flex: 1 0 0;
-  position: relative;
 `;
 
 const StyledA = styled.a`
-  margin: 1.6rem 0;
-  max-width: 76.8rem;
   position: fixed;
   z-index: 1;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 5.4rem;
-  width: 100%;
+  right: 2rem;
+  bottom: 7.4rem;
   display: block;
+  width: 6rem;
   height: 6rem;
   line-height: 6rem;
-  font-size: 1.8rem;
-  border-radius: 0.8rem;
-  background: #2d96f6;
-  color: #fff;
-  text-align: center;
+  text-indent: -9999px;
+  border-radius: 50%;
+  background: #2d96f6 url(/images/ico__add.svg) no-repeat center;
   transition: all 0.2s;
   box-shadow: 0 0 4rem -2rem rgba(0, 0, 0, 0.15);
   &:hover {
-    background: #238cee;
+    background-color: #238cee;
   }
 `;
 
@@ -91,11 +87,19 @@ const List = styled.li`
   }
 `;
 
-const Price = styled.strong`
-  margin-right: 1.6rem;
+const CountText = styled.em`
+  margin-right: 3px;
+  font-size: 2.2rem;
+  font-weight: 600;
+  font-style: normal;
 `;
 
-const Date = styled.span`
+const PriceText = styled.strong<{ salesType: TradingType }>`
+  margin-right: 1.6rem;
+  color: ${({ salesType }) => (salesType === TradingTypes.sell ? "#F02828" : "#0778DF")};
+`;
+
+const DateText = styled.span`
   padding-top: 0.8rem;
   display: block;
   color: #8f9093;

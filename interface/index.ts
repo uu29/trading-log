@@ -32,6 +32,14 @@ export interface IFullDateObj extends IDateObj {
   _minutes: number;
 }
 
+export const TradingTypes = {
+  sell: "매수",
+  buy: "매도",
+} as const;
+
+export type TradingType = typeof TradingTypes[keyof typeof TradingTypes];
+
+
 export type ISecondsMap = Map<number, IDateObj>;
 
 export type TCalendarMap = Map<number, IUserCalendar[]>;

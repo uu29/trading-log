@@ -106,7 +106,8 @@ const GlobalStyles = (props: any) => {
         }
 
         body,
-        div {
+        div,
+        textarea {
           font-size: 1.6rem;
           font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "맑은 고딕", "Malgun Gothic", sans-serif;
           color: #3b3e4a;
