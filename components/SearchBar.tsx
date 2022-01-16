@@ -4,10 +4,10 @@ import useForm from "hooks/useForm";
 interface IValue {
   text: string;
 }
-const initialValue: IValue = { text: "" };
+const initialForm: IValue = { text: "" };
 
 const SearchBar = () => {
-  const { form, handleChange } = useForm<IValue>({ initialValue });
+  const { form, handleChange } = useForm<IValue>({ initialForm });
   return (
     <BarWrap>
       <IcSearch />

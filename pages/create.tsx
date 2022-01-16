@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
 import styled from "@emotion/styled";
@@ -62,7 +62,7 @@ interface IForm extends IDefaultParams {
   trading_date: Timestamp;
 }
 
-const initialValue: ICreateParams = {
+const initialForm: ICreateParams = {
   stock_name: "",
   trading_type: TradingType.sell,
   trading_date: formatDate(new Date(), "%Y/%m/%d"),
@@ -73,9 +73,18 @@ const initialValue: ICreateParams = {
 
 const Create = () => {
   const router = useRouter();
-  const { form, handleChange, initForm } = useForm<ICreateParams>({ initialValue });
+  const { form, setForm, handleChange, initForm } = useForm<ICreateParams>({ initialForm });
   const [openCalendar, setOpenCalendar] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const changeDateCb = useCallback(
+    (sec: number) => {
+      const changedDate = formatDate(new Date(sec * 1000), "%Y/%m/%d");
+      console.log(changedDate);
+      setForm({ ...form, trading_date: changedDate });
+    },
+    [form, setForm]
+  );
 
   const toggleDate = () => {
     setOpenCalendar(!openCalendar);
@@ -131,7 +140,7 @@ const Create = () => {
             />
             {openCalendar && (
               <>
-                <CalendarForm />
+                <CalendarForm changeDateCb={changeDateCb} />
                 <CalendarBg onClick={closeCalendar} />
               </>
             )}
@@ -147,12 +156,8 @@ const Create = () => {
               name="trading_type"
               onChange={handleChange}
             >
-              <option value={TradingType.buy} selected={form.trading_type === TradingType.buy}>
-                {TradingType.buy}
-              </option>
-              <option value={TradingType.sell} selected={form.trading_type === TradingType.sell}>
-                {TradingType.sell}
-              </option>
+              <option value={TradingType.buy}>{TradingType.buy}</option>
+              <option value={TradingType.sell}>{TradingType.sell}</option>
             </SalesSelect>
             <input type="text" id="trading_type" name="trading_type" value={form.trading_type} onChange={handleChange} hidden />
           </RightColumn>

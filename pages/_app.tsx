@@ -1,4 +1,5 @@
 import { AppProps } from "next/app";
+import wrapper from "store";
 import Nav from "components/Nav";
 import Header from "components/Header";
 import styled from "@emotion/styled";
@@ -46,4 +47,4 @@ const ComponentInnerWrap = styled.div`
   flex-direction: column;
 `;
 
-export default App;
+export default wrapper.withRedux(App);

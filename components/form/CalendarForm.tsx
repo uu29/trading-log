@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import useCalendar from "hooks/useCalendar";
 import styled from "@emotion/styled";
 import { getDateObjFromSeconds, todaySec } from "core/firestore/timestamp";
@@ -7,11 +7,11 @@ import { CalendarGridWrap, ControlBtn } from "components/calendar/CalendarStyle"
 interface FormDateAreaProps {
   sec: number;
   extraDay: boolean;
-  selectedDate: number;
+  seletedDateSec: number;
   handleClickDateItem: (sec: number) => void;
 }
 
-const FormDateArea = ({ sec, extraDay, selectedDate, handleClickDateItem }: FormDateAreaProps) => {
+const FormDateArea = ({ sec, extraDay, seletedDateSec, handleClickDateItem }: FormDateAreaProps) => {
   const isToday = useMemo(() => todaySec() === sec, [sec]);
 
   const { _day } = getDateObjFromSeconds(sec);
@@ -21,7 +21,7 @@ const FormDateArea = ({ sec, extraDay, selectedDate, handleClickDateItem }: Form
     <DateItem
       extraDay={extraDay}
       isToday={isToday}
-      isSelected={sec === selectedDate}
+      isSelected={sec === seletedDateSec}
       isWeekend={_day === 0 || _day === 6}
       onClick={() => handleClickDateItem(sec)}
     >
@@ -30,14 +30,23 @@ const FormDateArea = ({ sec, extraDay, selectedDate, handleClickDateItem }: Form
   );
 };
 
-const CalendarForm = () => {
-  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay, selectedDate, setSeletedDate } = useCalendar();
+interface CalendarFormProps {
+  changeDateCb: (sec: number) => void;
+}
+
+const CalendarForm = ({ changeDateCb }: CalendarFormProps) => {
+  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay, seletedDateSec, setSeletedDateSec } = useCalendar();
+
   const handleClickDateItem = useCallback(
     (sec: number) => {
-      setSeletedDate(sec);
+      setSeletedDateSec(sec);
     },
-    [setSeletedDate]
+    [setSeletedDateSec]
   );
+
+  useEffect(() => {
+    changeDateCb(seletedDateSec);
+  }, [seletedDateSec, changeDateCb]);
 
   return (
     <CalendarFormWrap>
@@ -67,7 +76,7 @@ const CalendarForm = () => {
               key={sec}
               sec={sec}
               extraDay={checkExtraDay(sec)}
-              selectedDate={selectedDate}
+              seletedDateSec={seletedDateSec}
               handleClickDateItem={handleClickDateItem}
             />
           ))}

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 interface FormTypes<T> {
-  initialValue: T;
+  initialForm: T;
 }
 
-export default function useForm<T>({ initialValue }: FormTypes<T>) {
-  const [form, setForm] = useState(initialValue);
+export default function useForm<T>({ initialForm }: FormTypes<T>) {
+  const [form, setForm] = useState(initialForm);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -13,8 +13,8 @@ export default function useForm<T>({ initialValue }: FormTypes<T>) {
   };
 
   const initForm = () => {
-    setForm(initialValue);
+    setForm(initialForm);
   };
 
-  return { form, handleChange, initForm };
+  return { form, setForm, handleChange, initForm };
 }

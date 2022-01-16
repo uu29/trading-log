@@ -56,10 +56,10 @@ interface IValue {
   average: number;
 }
 
-const initialValue: IValue = { name: "", count: 0, average: 0 };
+const initialForm: IValue = { name: "", count: 0, average: 0 };
 
 const PortCreate = () => {
-  const { form, handleChange } = useForm<IValue>({ initialValue });
+  const { form, handleChange } = useForm<IValue>({ initialForm });
   return (
     <section>
       <Form method="post">
