@@ -23,7 +23,7 @@ const getInitDateObj = (year: number, month: number, init_day: number) => {
   return { init_d, init_d_date, init_d_day, init_d_sec };
 };
 
-const useCalendar = (start_date_sec?: number, end_date_sec?: number) => {
+const useCalendar = (init_date_sec?: number, start_date_sec?: number, end_date_sec?: number) => {
   const [currMonth, setCurrMonth] = useState(new Date().getMonth());
   const [currYear, setCurrYear] = useState(new Date().getFullYear());
   const [currYM, setCurrYM] = useState([0, 0]);
@@ -32,7 +32,7 @@ const useCalendar = (start_date_sec?: number, end_date_sec?: number) => {
   const [firstDateSec, setFirstDateSec] = useState(0); // 이번달 첫째 날의 seconds date
   const [lastDateSec, setLastDateSec] = useState(0); // 이번달 마지막 날의 seconds date
   const [secondsFromEpoch, setSecondsFromEpoch] = useState<number[]>([]);
-  const [seletedDateSec, setSeletedDateSec] = useState(todaySec()); // 선택된 날짜 (default = 0시 00분으로 초기화된 오늘 날짜)
+  const [seletedDateSec, setSeletedDateSec] = useState(init_date_sec ?? todaySec()); // 선택된 날짜 (default = 0시 00분으로 초기화된 오늘 날짜)
   const daysKr = ["일", "월", "화", "수", "목", "금", "토"];
 
   const setPrevMonth = () => {

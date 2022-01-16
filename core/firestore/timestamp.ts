@@ -80,7 +80,7 @@ export const getTimestampSecFromNumber = (_y: number, _m: number, _d: number) =>
 export const strDateToTimestamp = (strDate: string): Timestamp => {
   const [_y, _m, _d] = strDate.split("/");
   const y = Number(_y);
-  const m = Number(_m);
+  const m = Number(_m) - 1; // Date type month 통일을 위해 -1
   const d = Number(_d);
   const t = new Date(y, m, d);
   return Timestamp.fromDate(t);

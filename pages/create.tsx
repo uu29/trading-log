@@ -139,7 +139,7 @@ const Create = () => {
             />
             {openCalendar && (
               <>
-                <CalendarForm changeDateCb={changeDateCb} />
+                <CalendarForm changeDateCb={changeDateCb} initDateSec={strDateToTimestamp(form.trading_date).seconds} />
                 <CalendarBg onClick={closeCalendar} />
               </>
             )}

@@ -32,10 +32,12 @@ const FormDateArea = ({ sec, extraDay, seletedDateSec, handleClickDateItem }: Fo
 
 interface CalendarFormProps {
   changeDateCb: (sec: number) => void;
+  initDateSec: number;
 }
 
-const CalendarForm = ({ changeDateCb }: CalendarFormProps) => {
-  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay, seletedDateSec, setSeletedDateSec } = useCalendar();
+const CalendarForm = ({ changeDateCb, initDateSec }: CalendarFormProps) => {
+  const { currYM, secondsFromEpoch, daysKr, setPrevMonth, setNextMonth, checkExtraDay, seletedDateSec, setSeletedDateSec } =
+    useCalendar(initDateSec);
 
   const handleClickDateItem = useCallback(
     (sec: number) => {
