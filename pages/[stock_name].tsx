@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { fetchQueryData } from "core/firestore";
-import { ITdCreateForm, ITdCreateParams, ITradingDailyLog, TradingType } from "interface";
+import { ITdCreateParams, ITradingDailyLog, TradingType } from "interface";
 import { TradingTypes } from "interface";
 import { formatDate, getDateStrFromTimestamp } from "core/firestore/timestamp";
 import { where } from "@firebase/firestore";
