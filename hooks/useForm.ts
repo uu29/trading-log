@@ -9,6 +9,10 @@ export default function useForm<T>({ initialForm, changeFormCb }: FormTypes<T>) 
   const [form, setForm] = useState(initialForm);
 
   useEffect(() => {
+    setForm(initialForm);
+  }, [initialForm]);
+
+  useEffect(() => {
     if (changeFormCb) changeFormCb(form);
   }, [form, changeFormCb]);
 

@@ -64,7 +64,7 @@ export const getDateObjFromTimestamp = (date: Timestamp): IFullDateObj => {
 
 export const getDateStrFromTimestamp = (date: Timestamp): string => {
   const { _y, _m, _d } = getDateObjFromTimestamp(date);
-  return `${_y}/${_m}/${_d}`;
+  return formatDate(new Date(_y, _m, _d), "%Y/%m/%d");
 };
 
 export const getTimestampSecFromDate = (date: Timestamp) => {

@@ -39,7 +39,22 @@ export const TradingTypes = {
 
 export type TradingType = typeof TradingTypes[keyof typeof TradingTypes];
 
-
 export type ISecondsMap = Map<number, IDateObj>;
 
 export type TCalendarMap = Map<number, IUserCalendar[]>;
+
+interface ITdCreateDefaultParams {
+  stock_name: string;
+  trading_type: TradingType;
+  stock_amount: number;
+  price: number;
+  description: string;
+}
+
+export interface ITdCreateParams extends ITdCreateDefaultParams {
+  trading_date: string;
+}
+
+export interface ITdCreateForm extends ITdCreateDefaultParams {
+  trading_date: Timestamp;
+}
