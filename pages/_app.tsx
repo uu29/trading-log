@@ -1,4 +1,5 @@
 import { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react";
 import wrapper from "store";
 import Nav from "components/common/Nav";
 import Header from "components/common/Header";
@@ -6,9 +7,9 @@ import styled from "@emotion/styled";
 import GlobalStyles from "styles/GlobalStyles";
 import ToastContainer from "components/common/toast/ToastContainer";
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <>
+    <SessionProvider session={session}>
       <GlobalStyles />
       {!pageProps.hideHeader && <Header />}
       <OuterWrap>
@@ -20,7 +21,7 @@ function App({ Component, pageProps }: AppProps) {
         {!pageProps.hideNav && <Nav />}
         <ToastContainer />
       </OuterWrap>
-    </>
+    </SessionProvider>
   );
 }
 

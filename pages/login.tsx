@@ -5,6 +5,7 @@ import Image from "next/image";
 import { GoogleLogin } from "react-google-login";
 import { firebaseApp } from "firebase.config";
 import { getFirestore, collection, doc, setDoc, Timestamp } from "firebase/firestore";
+import { signIn } from "next-auth/react";
 import { checkIsExist } from "core/firestore/auth";
 import { toast } from "@toast-controller";
 const db = getFirestore(firebaseApp);
@@ -43,28 +44,32 @@ const login__logo = css`
   align-items: center;
 `;
 
+const createSession = () => {
+  signIn("google", { callbackUrl: "http://localhost:3000/" });
+};
+
 const successCb = async (profileObj: any) => {
   if (!profileObj) return;
   const { email, name } = profileObj;
   checkIsExist(email).then((is_exist) => {
-    if (!is_exist) toast.show({ message: "회원가입을 해주세요.", type: "warning" });
+    if (is_exist) createSession();
+    else {
+      const reg_date = Timestamp.fromDate(new Date());
+      const newUserRefDoc = doc(collection(db, collection_name));
+
+      // id 자동 생성 후 회원가입하기
+      const data = { name, email, reg_date };
+      setDoc(newUserRefDoc, data)
+        .then(() => {
+          toast.show({ message: "회원가입이 완료되었습니다.", type: "success" });
+          createSession();
+        })
+        .catch((err) => {
+          console.log("!!!!!!!!error!!!!!!!!");
+          console.log(err);
+        });
+    }
   });
-
-  const reg_date = Timestamp.fromDate(new Date());
-  const newUserRefDoc = doc(collection(db, collection_name));
-
-  // id 자동 생성 후 회원가입하기
-  const data = { name, email, reg_date };
-
-  await setDoc(newUserRefDoc, data)
-    .then((res) => {
-      console.log("~~~~~~~~~~~~~");
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log("!!!!!!!!error!!!!!!!!");
-      console.log(err);
-    });
 };
 
 const GoogleBtn = () => {

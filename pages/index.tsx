@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { State } from "store/slices";
 import styled from "@emotion/styled";
@@ -135,5 +137,18 @@ const DateText = styled.span`
 const ListBottom = styled.div`
   text-align: right;
 `;
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+  if (!session)
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+
+  return { props: {} };
+};
 
 export default Home;
