@@ -4,9 +4,8 @@ import { Logo } from "svgs";
 import Image from "next/image";
 import { GoogleLogin } from "react-google-login";
 import { firebaseApp } from "firebase.config";
-import { getFirestore, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { checkIsExist } from "core/firestore/auth";
-import { toast } from "@toast-controller";
+import { getFirestore, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 const collection_name = "members";
 
@@ -47,7 +46,10 @@ const successCb = async (profileObj: any) => {
   if (!profileObj) return;
   const { email, name } = profileObj;
   checkIsExist(email).then((is_exist) => {
-    if (!is_exist) toast.show({ message: "회원가입을 해주세요.", type: "warning" });
+    if (is_exist) {
+      alert("기존 회원입니다.");
+      return;
+    }
   });
 
   const reg_date = Timestamp.fromDate(new Date());

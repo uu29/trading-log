@@ -10,7 +10,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyles />
-      <Header />
+      {!pageProps.hideHeader && <Header />}
       <OuterWrap>
         <ComponentOuterWrap>
           <ComponentInnerWrap>
