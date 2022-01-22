@@ -1,6 +1,17 @@
 import { useMemo } from "react";
 import styled from "@emotion/styled";
-import { IconTdLog, IconRep, IconCal, IconCalActive, IconPortfolio, IconPortfolioActive, IconRepActive, IconTdLogActive } from "svgs";
+import {
+  IconTdLog,
+  IconRep,
+  IconCal,
+  IconCalActive,
+  IconPortfolio,
+  IconPortfolioActive,
+  IconRepActive,
+  IconTdLogActive,
+  IconUsers,
+  IconUsersActive,
+} from "svgs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -15,6 +26,7 @@ const mns = [
   { title: "종목분석", pathname: "/reports", iconEl: <IconRep />, iconElActive: <IconRepActive /> },
   { title: "포트폴리오", pathname: "/portfolio", iconEl: <IconPortfolio />, iconElActive: <IconPortfolioActive /> },
   { title: "일정관리", pathname: "/calendar", iconEl: <IconCal />, iconElActive: <IconCalActive /> },
+  { title: "마이메뉴", pathname: "/users", iconEl: <IconUsers />, iconElActive: <IconUsersActive /> },
 ];
 
 const Nav = () => {
