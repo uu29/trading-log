@@ -3,12 +3,14 @@ import styled from "@emotion/styled";
 const AddBtn = () => <Btn type="button">작성하기</Btn>;
 
 const Btn = styled.button`
-  margin: 1.6rem;
+  margin: 1.6rem 0;
   position: absolute;
   z-index: 1;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 0;
-  width: calc(100% - 3.2rem);
+  max-width: 76.8rem;
+  width: 100%;
   display: block;
   height: 6rem;
   font-size: 1.8rem;
