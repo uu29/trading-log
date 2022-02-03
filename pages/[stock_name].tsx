@@ -42,7 +42,7 @@ const Detail = ({ stock_name }: IDetailProps) => {
         // setError(err);
       });
   }, [stock_name]);
-  return <TradingDailyForm initialForm={form} />;
+  return <TradingDailyForm initialForm={form} showDelBtn/>;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {

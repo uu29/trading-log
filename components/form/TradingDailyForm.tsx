@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import CalendarForm from "components/form/CalendarForm";
 import { formatDate, strDateToTimestamp } from "core/firestore/timestamp";
-import { setDocData } from "core/firestore";
+import { deleteDocData, setDocData } from "core/firestore";
 import { toast } from "@toast-controller";
 import LoadingOverlay from "components/common/loading/LoadingOverlay";
 import { TradingType, TradingTypes } from "interface";
@@ -42,9 +42,10 @@ const form_input_style = css`
 
 interface TradingDailyFormProps {
   initialForm: ITdCreateParams;
+  showDelBtn?: boolean;
 }
 
-const TradingDailyForm = ({ initialForm }: TradingDailyFormProps) => {
+const TradingDailyForm = ({ initialForm, showDelBtn }: TradingDailyFormProps) => {
   const router = useRouter();
   const { form, updateForm, handleChange, initForm } = useForm<ITdCreateParams>({ initialForm });
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -65,6 +66,22 @@ const TradingDailyForm = ({ initialForm }: TradingDailyFormProps) => {
 
   const closeCalendar = () => {
     setOpenCalendar(false);
+  };
+
+  const handleClickDelete = () => {
+    const confirmed = confirm("정말 삭제하시겠습니까?");
+    if (confirmed) {
+      const unique_key = form.stock_name;
+      deleteDocData(COL_NAME, unique_key)
+        .then(() => {
+          toast.show({ message: "삭제되었습니다.", type: "success" });
+          initForm();
+          router.push("/");
+        })
+        .catch(() => {
+          toast.show({ message: "삭제 실패. 다시 시도해주세요.", type: "fail" });
+        });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -169,7 +186,14 @@ const TradingDailyForm = ({ initialForm }: TradingDailyFormProps) => {
           onChange={handleChange}
           className={form_input_style}
         />
-        <SubmitBtn>작성하기</SubmitBtn>
+        <BtnLine>
+          {showDelBtn && (
+            <DelBtn type="button" onClick={handleClickDelete}>
+              삭제
+            </DelBtn>
+          )}
+          <SubmitBtn>작성하기</SubmitBtn>
+        </BtnLine>
       </form>
     </FormWrap>
   );
@@ -195,15 +219,30 @@ const CalendarBg = styled.div`
   top: 0;
 `;
 
-const SubmitBtn = styled.button`
+const BtnLine = styled.div`
   margin-top: 1.6rem;
-  display: block;
-  width: 100%;
+  display: flex;
   height: 6rem;
+  color: #fff;
+`;
+
+const DelBtn = styled.button`
+  display: inline-block;
+  margin-right: 1rem;
+  width: 12%;
+  background: #df4d44;
+  font-size: 1.8rem;
+  border-radius: 0.8rem;
+  &:hover {
+    background: #d13e34;
+  }
+`;
+
+const SubmitBtn = styled.button`
+  flex: 1 0 0;
   font-size: 1.8rem;
   border-radius: 0.8rem;
   background: #2d96f6;
-  color: #fff;
   text-align: center;
   transition: all 0.2s;
   box-shadow: 0 0 4rem -2rem rgba(0, 0, 0, 0.15);

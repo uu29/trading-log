@@ -53,7 +53,7 @@ export const initDateSec = (n = 1, date?: Date) => {
 export const getDateObjFromTimestamp = (date: Timestamp): IFullDateObj => {
   const _t = date.toDate();
   const _y = _t.getFullYear();
-  const _m = _t.getMonth() + 1;
+  const _m = _t.getMonth();
   const _d = _t.getDate();
   const _day = _t.getDay();
   const _h = _t.getHours();
