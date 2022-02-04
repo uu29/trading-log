@@ -28,7 +28,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 const OuterWrap = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 5.4rem);
+  // min-height: calc(100vh - 5.4rem);
   overflow: hidden;
   background-color: #e9eaef;
 `;
@@ -37,7 +37,7 @@ const ComponentOuterWrap = styled.div`
   position: relative;
   flex: 1 0 0;
   width: 100%;
-  margin-bottom: 5.4rem;
+  // margin-bottom: 5.4rem;
 `;
 
 const ComponentInnerWrap = styled.div`
@@ -46,6 +46,7 @@ const ComponentInnerWrap = styled.div`
   margin: auto;
   max-width: 76.8rem;
   height: 100%;
+  min-height: calc(100vh - 96px - 52px);
 `;
 
 export default wrapper.withRedux(App);

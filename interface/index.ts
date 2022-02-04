@@ -1,5 +1,11 @@
 import { Timestamp } from "firebase/firestore";
 
+export interface ISessionUser {
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+}
+
 export interface ITradingDailyLog {
   currency: string;
   description: string;

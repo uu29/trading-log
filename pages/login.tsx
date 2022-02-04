@@ -1,3 +1,5 @@
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import styled from "@emotion/styled";
 import { cx, css } from "@emotion/css";
 import { Logo } from "svgs";
@@ -157,10 +159,17 @@ const Title = styled.h1`
   color: #000;
 `;
 
-export async function getStaticProps() {
-  return {
-    props: { hideNav: true, hideHeader: true },
-  };
-}
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+  if (session)
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+
+  return { props: { hideNav: true, hideHeader: true } };
+};
 
 export default Login;

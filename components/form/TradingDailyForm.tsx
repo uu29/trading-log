@@ -48,6 +48,7 @@ interface TradingDailyFormProps {
 const TradingDailyForm = ({ initialForm, showDelBtn }: TradingDailyFormProps) => {
   const router = useRouter();
   const { form, updateForm, handleChange, initForm } = useForm<ITdCreateParams>({ initialForm });
+  const unique_key = form.stock_name;
   const [openCalendar, setOpenCalendar] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const initDateSec = useMemo(() => strDateToTimestamp(form.trading_date).seconds, [form.trading_date]);
@@ -71,7 +72,6 @@ const TradingDailyForm = ({ initialForm, showDelBtn }: TradingDailyFormProps) =>
   const handleClickDelete = () => {
     const confirmed = confirm("정말 삭제하시겠습니까?");
     if (confirmed) {
-      const unique_key = form.stock_name;
       deleteDocData(COL_NAME, unique_key)
         .then(() => {
           toast.show({ message: "삭제되었습니다.", type: "success" });
@@ -94,7 +94,6 @@ const TradingDailyForm = ({ initialForm, showDelBtn }: TradingDailyFormProps) =>
 
     if (submitting) return;
     setSubmitting(true);
-    const unique_key = form.stock_name;
     setDocData<ITdCreateForm>(COL_NAME, unique_key, new_form)
       .then(() => {
         toast.show({ message: "등록되었습니다.", type: "success" });
