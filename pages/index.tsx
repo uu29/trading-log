@@ -6,15 +6,21 @@ import { State } from "store/slices";
 import styled from "@emotion/styled";
 import SearchBar from "components/common/SearchBar";
 import Link from "next/link";
-import { fetchData } from "core/firestore";
+import { fetchQueryData } from "core/firestore";
 import { formatDate } from "core/firestore/timestamp";
+import { where } from "@firebase/firestore";
 import { numberWithCommas } from "lib/common";
-import { ITradingDailyLog } from "interface";
+import { ISessionUser, ITradingDailyLog } from "interface";
 import { TradingType, TradingTypes } from "interface";
 const trading_collection = "user_trading_daily";
 
-const Home = () => {
+interface IHomeProps {
+  session_user: ISessionUser;
+}
+
+const Home = ({ session_user }: IHomeProps) => {
   const searchQuery = useSelector((state: State) => state.main.search_query);
+  const user_email = session_user?.email ?? "";
   const [error, setError] = useState();
   const [data, setData] = useState<ITradingDailyLog[]>([]);
   const [displayData, setDisplayData] = useState<ITradingDailyLog[]>([]);
@@ -24,7 +30,7 @@ const Home = () => {
   }, [error]);
 
   useEffect(() => {
-    fetchData<ITradingDailyLog>(trading_collection)
+    fetchQueryData<ITradingDailyLog>(trading_collection, [where("user_email", "==", user_email)])
       .then((res) => setData(res))
       .catch((err) => setError(err));
   }, []);
@@ -140,6 +146,7 @@ const ListBottom = styled.div`
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
+  const session_user = session?.user ?? null;
   if (!session)
     return {
       redirect: {
@@ -148,7 +155,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       },
     };
 
-  return { props: {} };
+  return { props: { session_user } };
 };
 
 export default Home;
