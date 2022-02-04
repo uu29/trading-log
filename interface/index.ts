@@ -14,6 +14,7 @@ export interface ITradingDailyLog {
   stock_name: string;
   trading_date: Timestamp;
   trading_type: string;
+  user_email: string;
 }
 
 export interface IUserCalendar {
@@ -55,6 +56,7 @@ interface ITdCreateDefaultParams {
   stock_amount: number;
   price: number;
   description: string;
+  user_email: string;
 }
 
 export interface ITdCreateParams extends ITdCreateDefaultParams {

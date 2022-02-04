@@ -30,11 +30,11 @@ const UserProfile = () => (
 );
 
 interface IUserProps {
-  user: ISessionUser;
+  session_user: ISessionUser;
 }
 
-const Users = ({ user }: IUserProps) => {
-  const email = user?.email ?? "";
+const Users = ({ session_user }: IUserProps) => {
+  const email = session_user?.email ?? "";
 
   const handleClickLogout = () => {
     signOut();
@@ -77,8 +77,8 @@ const Email = styled.div`
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
-  const user = session?.user ?? null;
-  if (!session && !user)
+  const session_user = session?.user ?? null;
+  if (!session && !session_user)
     return {
       redirect: {
         destination: "/login",
@@ -86,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       },
     };
 
-  return { props: { user } };
+  return { props: { session_user } };
 };
 
 export default Users;

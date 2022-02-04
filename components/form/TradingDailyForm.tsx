@@ -48,7 +48,7 @@ interface TradingDailyFormProps {
 const TradingDailyForm = ({ initialForm, showDelBtn }: TradingDailyFormProps) => {
   const router = useRouter();
   const { form, updateForm, handleChange, initForm } = useForm<ITdCreateParams>({ initialForm });
-  const unique_key = form.stock_name;
+  const unique_key = form.stock_name + form.user_email;
   const [openCalendar, setOpenCalendar] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const initDateSec = useMemo(() => strDateToTimestamp(form.trading_date).seconds, [form.trading_date]);
@@ -122,7 +122,7 @@ const TradingDailyForm = ({ initialForm, showDelBtn }: TradingDailyFormProps) =>
               type="text"
               id="trading_date"
               name="trading_date"
-              value={form.trading_date}
+              value={form.trading_date || formatDate(new Date(), "%Y/%m/%d")}
               onClick={toggleDate}
               className={form_input_style}
               readOnly
