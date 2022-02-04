@@ -16,12 +16,5 @@ export const fetchQueryData = async <T>(col_name: string, wheres: QueryConstrain
   return list as T[];
 };
 
-export const setDocData = async <T>(col_name: string, unique_key: string, form: T) => {
-  const newDocRef = await setDoc(doc(db, col_name, unique_key), form);
-  return newDocRef;
-};
-
-export const deleteDocData = async <T>(col_name: string, unique_key: string) => {
-  const delDocRef = await deleteDoc(doc(db, col_name, unique_key));
-  return delDocRef;
-};
+export const setDocData = <T>(col_name: string, unique_key: string, form: T) => setDoc(doc(db, col_name, unique_key), form);
+export const deleteDocData = (col_name: string, unique_key: string) => deleteDoc(doc(db, col_name, unique_key));

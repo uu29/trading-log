@@ -4,11 +4,12 @@ import { ITdCreateParams } from "interface";
 import { ISessionUser } from "interface";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
+import { formatDate } from "core/firestore/timestamp";
 
 const initialForm: ITdCreateParams = {
   stock_name: "",
   trading_type: TradingTypes.sell,
-  trading_date: "",
+  trading_date: formatDate(new Date(), "%Y/%m/%d"),
   stock_amount: 0,
   price: 0,
   description: "",

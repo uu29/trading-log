@@ -37,7 +37,7 @@ const ComponentOuterWrap = styled.div`
   position: relative;
   flex: 1 0 0;
   width: 100%;
-  // margin-bottom: 5.4rem;
+  padding-bottom: 5.4rem;
 `;
 
 const ComponentInnerWrap = styled.div`
@@ -46,7 +46,7 @@ const ComponentInnerWrap = styled.div`
   margin: auto;
   max-width: 76.8rem;
   height: 100%;
-  min-height: calc(100vh - 96px - 52px);
+  min-height: calc(100vh - 96px - 54px);
 `;
 
 export default wrapper.withRedux(App);
