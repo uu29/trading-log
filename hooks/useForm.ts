@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, HTMLInputTypeAttribute } from "react";
 
 interface FormTypes<T> {
   initialForm: T;
@@ -16,6 +16,11 @@ export default function useForm<T>({ initialForm, changeFormCb }: FormTypes<T>) 
     if (changeFormCb) changeFormCb(form);
   }, [form, changeFormCb]);
 
+  const handleChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setForm({ ...form, [name]: checked });
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
@@ -29,5 +34,5 @@ export default function useForm<T>({ initialForm, changeFormCb }: FormTypes<T>) 
     setForm(initialForm);
   };
 
-  return { form, updateForm, handleChange, initForm };
+  return { form, updateForm, handleChange, handleChangeCheckbox, initForm };
 }
