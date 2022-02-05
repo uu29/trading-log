@@ -20,9 +20,9 @@ export interface ITradingDailyLog {
 export interface IUserCalendar {
   alert: boolean;
   content: string;
-  d_time: Timestamp;
   title: string;
   date: Timestamp;
+  user_email: string;
   time?: Timestamp; // 없으면 유저가 시간 설정 안한 것
 }
 

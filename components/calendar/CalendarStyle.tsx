@@ -6,6 +6,7 @@ export const colors = ["#314BDB", "#F59A2F", "#FCF208", "#14BF58", "#4CB8F5"];
 
 export const Label = styled.div<{ bgColor: string; isFirst: boolean; extraDay?: boolean }>`
   float: right;
+  margin-bottom: 2px;
   padding: 2px 4px;
   border-radius: 2px;
   line-height: 1.3;
@@ -40,7 +41,8 @@ const todayCell = `
   }
 `;
 
-export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedule?: boolean; isToday?: boolean }>`
+export const DateArea = styled.div<{ mouseOver: boolean; day?: number; extraDay?: boolean; hasSchedule?: boolean; isToday?: boolean }>`
+  position: relative;
   height: 7rem;
   font-size: 2rem;
   border-bottom: 1px solid #dee0e9;
@@ -48,7 +50,22 @@ export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedu
   ${({ isToday }) => isToday && todayCell};
   ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
   ${({ extraDay }) => extraDay && "color: #bbb;"}
-  ${({ hasSchedule, extraDay }) => !extraDay && hasSchedule && "color: #1780e1;"}
+  ${({ hasSchedule, extraDay }) => !extraDay && hasSchedule && "color: #1780e1;"};
+  ${({ mouseOver }) => mouseOver && "color: #818CBA"};
+`;
+
+export const DateCreateBtn = styled.button`
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  text-indent: -9999px;
+  background: url(/images/ico__plus.svg) no-repeat center;
+  background-color: rgba(110, 138, 164, 0.05);
+  background-size: 2.8rem;
 `;
 
 export const AlrtBtn = styled.button<{ isAlrtOn?: boolean }>`
@@ -71,6 +88,10 @@ export const Daily = styled.ul`
     border-bottom: 2px solid #e9eaef;
     &:first-of-type {
       margin-top: 0;
+    }
+    &:last-of-type {
+      border-bottom: 0 none;
+      padding-bottom: 0;
     }
   }
 `;
@@ -147,7 +168,7 @@ export const TitleArea = styled.div`
   padding: 1.8rem 2.4rem 2rem;
   text-align: center;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   line-height: 1;
   background: rgba(255, 255, 255, 0.9);
@@ -184,22 +205,25 @@ export const CreateLink = styled.a`
 `;
 
 export const ControlBtn = styled.button<{ isNext?: boolean }>`
-  width: 2rem;
-  height: 2.4rem;
-  padding-top: 2px;
+  width: 3rem;
+  height: 3rem;
   font-size: 1.6rem;
   color: #8f9093;
   transform: translateY(1px);
   text-indent: -9999px;
+  border-radius: 50%;
 
   ${({ isNext }) =>
     isNext
       ? `
-  background: url(/images/ico__next.svg) no-repeat right;
-  padding-right: 2.4rem;
+  background: url(/images/ico__next.svg) no-repeat center;
   `
       : `
-  background: url(/images/ico__prev.svg) no-repeat left;
-  padding-left: 2.4rem;
+  background: url(/images/ico__prev.svg) no-repeat center;
   `};
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+  transition: background-color 0.3s;
 `;

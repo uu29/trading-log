@@ -9,9 +9,9 @@ import { fetchQueryData } from "core/firestore";
 import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
-import Link from "next/link";
 import { toast } from "@toast-controller";
-const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, CreateLink, top__day, top__weekend } = CalendarStyle;
+import CreateSchedule from "components/calendar/CreateSchedule";
+const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, top__day, top__weekend } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
 interface ICalendarProps {
@@ -29,8 +29,8 @@ const Calendar = ({ session_user }: ICalendarProps) => {
     const startTime = Timestamp.fromDate(new Date(startDateSec * 1000));
     const lastTime = Timestamp.fromDate(new Date(endDateSec * 1000));
     fetchQueryData<IUserCalendar>(calendar_collection, [
-      where("d_time", ">=", startTime),
-      where("d_time", "<=", lastTime),
+      where("date", ">=", startTime),
+      where("date", "<=", lastTime),
       where("user_email", "==", user_email),
     ])
       .then((res) => {
@@ -48,11 +48,16 @@ const Calendar = ({ session_user }: ICalendarProps) => {
 
   useEffect(() => {
     if (error) toast.show({ message: "데이터를 불러올 수 없습니다.", type: "fail" });
+    console.log(error);
+    () => {
+      setError(null);
+    };
   }, [error]);
 
   return (
     <section>
       <CalLayer>
+        <CreateSchedule />
         <TitleArea>
           <ControlBtn type="button" onClick={setPrevMonth} />
           <Title>
@@ -62,9 +67,9 @@ const Calendar = ({ session_user }: ICalendarProps) => {
             <span className="text">월</span>
           </Title>
           <ControlBtn type="button" onClick={setNextMonth} isNext />
-          <Link href="/calendar/create" passHref>
+          {/* <Link href="/calendar/create" passHref>
             <CreateLink type="button">일정 추가</CreateLink>
-          </Link>
+          </Link> */}
         </TitleArea>
         <CalendarGridWrap>
           {daysKr.map((dayStr, dayNum) =>
