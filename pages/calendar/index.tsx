@@ -1,28 +1,38 @@
 import { useState, useEffect, useMemo } from "react";
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import { cx } from "@emotion/css";
 import useCalendar from "hooks/useCalendar";
-import { IUserCalendar, TCalendarMap } from "interface";
+import { ISessionUser, IUserCalendar, TCalendarMap } from "interface";
 import { where, Timestamp } from "@firebase/firestore";
 import { fetchQueryData } from "core/firestore";
 import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
 import Link from "next/link";
+import { toast } from "@toast-controller";
 const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, CreateLink, top__day, top__weekend } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
-const Calendar = () => {
-  const { currYM, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch, checkExtraDay, daysKr } = useCalendar();
+interface ICalendarProps {
+  session_user: ISessionUser;
+}
 
+const Calendar = ({ session_user }: ICalendarProps) => {
+  const user_email = session_user?.email ?? "";
+  const { currYM, startDateSec, endDateSec, setPrevMonth, setNextMonth, secondsFromEpoch, checkExtraDay, daysKr } = useCalendar();
   const [error, setError] = useState(null);
   const [calendarMap, setCalendarMap] = useState<TCalendarMap>(new Map<number, IUserCalendar[]>());
-
   const getCalDate = useMemo(() => (sec: number) => calendarMap.has(sec) ? calendarMap.get(sec) : [], [calendarMap]);
 
   useEffect(() => {
     const startTime = Timestamp.fromDate(new Date(startDateSec * 1000));
     const lastTime = Timestamp.fromDate(new Date(endDateSec * 1000));
-    fetchQueryData<IUserCalendar>(calendar_collection, [where("d_time", ">=", startTime), where("d_time", "<=", lastTime)])
+    fetchQueryData<IUserCalendar>(calendar_collection, [
+      where("d_time", ">=", startTime),
+      where("d_time", "<=", lastTime),
+      where("user_email", "==", user_email),
+    ])
       .then((res) => {
         const map = new Map<number, IUserCalendar[]>();
         res.forEach((curr) => {
@@ -34,9 +44,11 @@ const Calendar = () => {
         setCalendarMap(map);
       })
       .catch((err) => setError(err));
-  }, [currYM, startDateSec, endDateSec]);
+  }, [currYM, startDateSec, endDateSec, user_email]);
 
-  if (error) return <>데이터를 불러올 수 없습니다.</>; // error 처리 해주기
+  useEffect(() => {
+    if (error) toast.show({ message: "데이터를 불러올 수 없습니다.", type: "fail" });
+  }, [error]);
 
   return (
     <section>
@@ -76,6 +88,20 @@ const Calendar = () => {
       <CalendarList listMap={calendarMap} />
     </section>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+  const session_user = session?.user ?? null;
+  if (!session)
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+
+  return { props: { session_user } };
 };
 
 export default Calendar;
