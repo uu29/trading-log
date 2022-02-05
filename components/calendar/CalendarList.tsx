@@ -28,7 +28,7 @@ const CalendarListItem = ({ dateList }: CalendarListItemProps) => {
   const firstDTime = dateList[0].d_time;
   const { _y, _m, _d, _day } = getDateObjFromTimestamp(firstDTime);
 
-  if (currYM[0] !== _y || currYM[1] !== _m) return <></>; // 이번달 스케줄만 보여줌
+  if (currYM[0] !== _y || currYM[1] - 1 !== _m) return <></>; // 이번달 스케줄만 보여줌
 
   return (
     <MonthlyItem>

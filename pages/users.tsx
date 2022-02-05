@@ -54,6 +54,7 @@ const Users = ({ session_user }: IUserProps) => {
 };
 
 const UsersWrap = styled.div`
+  flex: 1 0 0;
   height: 100%;
   display: flex;
   flex-direction: column;

@@ -37,6 +37,7 @@ const login__btn = css`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.6rem;
 `;
 
 const login__logo = css`

@@ -35,15 +35,15 @@ const todayCell = `
     position: absolute;
     left: 0;
     top: 0;
-    border: 2px solid #656772;
-    border-radius: 3px;
+    // border: 2px solid #656772;
+    box-shadow: inset 0 0 0 2px #656772;
   }
 `;
 
 export const DateArea = styled.div<{ day?: number; extraDay?: boolean; hasSchedule?: boolean; isToday?: boolean }>`
   height: 7rem;
   font-size: 2rem;
-  border-top: 1px solid #dee0e9;
+  border-bottom: 1px solid #dee0e9;
   padding: 4px;
   ${({ isToday }) => isToday && todayCell};
   ${({ day }) => day !== undefined && day !== 0 && day !== 6 && `background: #fff;`};
@@ -108,8 +108,7 @@ export const top__day = css`
   padding-bottom: 0.5rem;
   font-size: 1.8rem;
   background: rgba(255, 255, 255, 0.8);
-  border-top: 0 none;
-  border-bottom: 1px solid #dee0e9;
+  border-bottom: 2px solid #dee0e9;
 `;
 
 export const top__weekend = css`
@@ -123,14 +122,25 @@ export const extra__day = css`
 export const CalendarGridWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  border-radius: 2rem;
 `;
 
 export const CalLayer = styled.div`
   position: relative;
-  background: rgba(255, 255, 255, 0.6);
   margin: 2.4rem 3.2rem;
+  padding-bottom: 2rem;
   overflow: hidden;
   border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2rem;
+    background: #fff;
+  }
 `;
 
 export const TitleArea = styled.div`
@@ -176,7 +186,7 @@ export const CreateLink = styled.a`
 export const ControlBtn = styled.button<{ isNext?: boolean }>`
   width: 2rem;
   height: 2.4rem;
-  padding-top: 2px;   
+  padding-top: 2px;
   font-size: 1.6rem;
   color: #8f9093;
   transform: translateY(1px);
