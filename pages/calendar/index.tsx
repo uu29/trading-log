@@ -10,7 +10,6 @@ import CalendarDateArea from "components/calendar/CalendarDateArea";
 import CalendarList from "components/calendar/CalendarList";
 import * as CalendarStyle from "components/calendar/CalendarStyle";
 import { toast } from "@toast-controller";
-import CreateSchedule from "components/calendar/CreateSchedule";
 const { CalLayer, CalendarGridWrap, TitleArea, Title, ControlBtn, top__day, top__weekend } = CalendarStyle;
 const calendar_collection = "user_calendar";
 
@@ -57,7 +56,6 @@ const Calendar = ({ session_user }: ICalendarProps) => {
   return (
     <section>
       <CalLayer>
-        <CreateSchedule />
         <TitleArea>
           <ControlBtn type="button" onClick={setPrevMonth} />
           <Title>

@@ -41,7 +41,7 @@ const todayCell = `
   }
 `;
 
-export const DateArea = styled.div<{ mouseOver: boolean; day?: number; extraDay?: boolean; hasSchedule?: boolean; isToday?: boolean }>`
+export const DateCell = styled.div<{ mouseOver: boolean; day?: number; extraDay?: boolean; hasSchedule?: boolean; isToday?: boolean }>`
   position: relative;
   height: 7rem;
   font-size: 2rem;

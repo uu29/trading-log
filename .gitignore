@@ -38,3 +38,6 @@ firebase.config.js
 
 # .env
 .env.development
+
+# vsc setting
+settings.json

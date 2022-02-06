@@ -31,7 +31,7 @@ const placeholder_color = css`
   color: #c1c5d8;
 `;
 
-const initialForm: IUserCalendar = {
+export const initCreateScheduleForm: IUserCalendar = {
   title: "",
   alert: false,
   date: Timestamp.now(),
@@ -39,9 +39,15 @@ const initialForm: IUserCalendar = {
   user_email: "",
 };
 
-const CreateSchedule = () => {
+interface ICreateScheduleProps {
+  deactivateCreate: () => void;
+}
+
+const CreateSchedule = ({ deactivateCreate }: ICreateScheduleProps) => {
   const [showPHolder, setShowPHolder] = useState(true);
-  const { form, updateForm, handleChange, handleChangeCheckbox, initForm } = useForm<IUserCalendar>({ initialForm });
+  const { form, updateForm, handleChange, handleChangeCheckbox, initForm } = useForm<IUserCalendar>({
+    initialForm: initCreateScheduleForm,
+  });
 
   const onFocusTitle = () => {
     setShowPHolder(false);
@@ -56,50 +62,62 @@ const CreateSchedule = () => {
   };
 
   return (
-    <CreateScheduleWrap>
-      <form method="post" onSubmit={handleSubmit}>
-        <TitleLabel htmlFor="title">
-          {!form.title && showPHolder && <TitleLabelText className={placeholder_color}>일정 제목 추가</TitleLabelText>}
-          <TitleInput
-            onFocus={onFocusTitle}
-            onBlur={onBlurTitle}
-            id="title"
-            name="title"
-            type="text"
-            value={form.title}
-            onChange={handleChange}
-          />
-        </TitleLabel>
-        <label htmlFor="date" className={label_block}>
-          <CalIcon className={label_icon}>날짜 선택</CalIcon>
-          <DateValue type="button">
-            2022<span>년</span> 2<span>월</span> 14<span>일</span>
-          </DateValue>
-          <input id="date" type="text" hidden value={form.date.seconds} />
-        </label>
-        <TimeLabel htmlFor="time" className={label_inline}>
-          <ClockIcon className={label_icon} />
-          <TimeLabelText className={placeholder_color}>시간 추가</TimeLabelText>
-          {/* <input id="time" type="time" value={form?.time?.seconds ?? undefined} /> */}
-        </TimeLabel>
-        <div className={label_inline}>
-          <BellIcon />
-          <label htmlFor="alert">
-            <SwitchBox>
-              <input id="alert" name="alert" type="checkbox" checked={form.alert} onChange={handleChangeCheckbox} hidden />
-              <AlrtController isChecked={form.alert} />
-            </SwitchBox>
+    <>
+      <CreateScheduleOverlay role="dialog">
+        <form method="post" onSubmit={handleSubmit}>
+          <TitleLabel htmlFor="title">
+            {!form.title && showPHolder && <TitleLabelText className={placeholder_color}>일정 제목 추가</TitleLabelText>}
+            <TitleInput
+              onFocus={onFocusTitle}
+              onBlur={onBlurTitle}
+              id="title"
+              name="title"
+              type="text"
+              value={form.title}
+              onChange={handleChange}
+            />
+          </TitleLabel>
+          <label htmlFor="date" className={label_block}>
+            <CalIcon className={label_icon}>날짜 선택</CalIcon>
+            <DateValue type="button">
+              2022<span>년</span> 2<span>월</span> 14<span>일</span>
+            </DateValue>
+            <input id="date" type="text" hidden value={form.date.seconds} />
           </label>
-          <AlrtText isChecked={form.alert}>{form.alert ? "알람 켜짐" : "알람 꺼짐"}</AlrtText>
-        </div>
-        <ContentArea>
-          <EditIcon>설명 추가</EditIcon>
-          <ContentText id="content" name="content" value={form.content} rows={4} cols={42} onChange={handleChange} />
-        </ContentArea>
-      </form>
-    </CreateScheduleWrap>
+          <TimeLabel htmlFor="time" className={label_inline}>
+            <ClockIcon className={label_icon} />
+            <TimeLabelText className={placeholder_color}>시간 추가</TimeLabelText>
+            {/* <input id="time" type="time" value={form?.time?.seconds ?? undefined} /> */}
+          </TimeLabel>
+          <div className={label_inline}>
+            <BellIcon />
+            <label htmlFor="alert">
+              <SwitchBox>
+                <input id="alert" name="alert" type="checkbox" checked={form.alert} onChange={handleChangeCheckbox} hidden />
+                <AlrtController isChecked={form.alert} />
+              </SwitchBox>
+            </label>
+            <AlrtText isChecked={form.alert}>{form.alert ? "알람 켜짐" : "알람 꺼짐"}</AlrtText>
+          </div>
+          <ContentArea>
+            <EditIcon>설명 추가</EditIcon>
+            <ContentText id="content" name="content" value={form.content} rows={4} cols={42} onChange={handleChange} />
+          </ContentArea>
+        </form>
+      </CreateScheduleOverlay>
+      <Background onClick={deactivateCreate} />
+    </>
   );
 };
+
+const Background = styled.div`
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
 
 const ContentArea = styled.div`
   display: flex;
@@ -218,8 +236,8 @@ const TitleInput = styled.input`
   border: 0 none;
 `;
 
-const CreateScheduleWrap = styled.div`
-  position: absolute;
+const CreateScheduleOverlay = styled.div`
+  position: fixed;
   z-index: 100;
   left: 10px;
   top: 10px;

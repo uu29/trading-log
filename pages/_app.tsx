@@ -20,6 +20,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         </ComponentOuterWrap>
         {!pageProps.hideNav && <Nav />}
         <ToastContainer />
+        <div id="portal"></div>
       </OuterWrap>
     </SessionProvider>
   );
