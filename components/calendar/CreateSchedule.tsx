@@ -89,7 +89,10 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
   return (
     <>
       <CreateScheduleOverlay role="dialog" style={posStyle}>
-        <form method="post" onSubmit={handleSubmit}>
+        <CloseBtn type="button" onClick={deactivateCreate}>
+          닫기
+        </CloseBtn>
+        <Form method="post" onSubmit={handleSubmit}>
           <TitleLabel htmlFor="title">
             {!form.title && showPHolder && <TitleLabelText className={placeholder_color}>일정 제목 추가</TitleLabelText>}
             <TitleInput
@@ -133,12 +136,27 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
             <EditIcon>설명 추가</EditIcon>
             <ContentText id="content" name="content" value={form.content} rows={4} cols={42} onChange={handleChange} />
           </ContentArea>
-        </form>
+        </Form>
       </CreateScheduleOverlay>
       <Background onClick={deactivateCreate} />
     </>
   );
 };
+
+const CloseBtn = styled.button`
+  display: block;
+  float: right;
+  margin: 8px 13px;
+  text-indent: -9999px;
+  height: 2.6rem;
+  width: 2.6rem;
+  background: url(/images/ico__close.svg) no-repeat center;
+  background-size: 2.4rem;
+  border-radius: 2rem;
+  &:hover {
+    background-color: #f1f2f3;
+  }
+`;
 
 const Background = styled.div`
   position: fixed;
@@ -268,14 +286,17 @@ const TitleInput = styled.input`
 
 const CreateScheduleOverlay = styled.div`
   position: fixed;
-  margin: 4px;
+  margin: -8px 4px 0 4px;
   z-index: 100;
   width: 100%;
-  padding: 2rem;
   max-width: 46rem;
   background: #fff;
   box-shadow: 0 0 60px -10px rgba(66, 74, 106, 0.6);
   border-radius: 1rem;
+`;
+
+const Form = styled.form`
+  margin: 3.5rem 2rem 2rem 2rem;
 `;
 
 export default CreateSchedule;

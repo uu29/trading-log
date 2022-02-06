@@ -85,7 +85,7 @@ const CloseBtn = styled.button`
   display: block;
   width: 2rem;
   height: 2rem;
-  background: url(/images/ico__toast_close.svg) no-repeat center;
+  background: url(/images/ico__close.svg) no-repeat center;
 `;
 
 const TypeIcon = styled.div<{ iconSrc: string }>`
