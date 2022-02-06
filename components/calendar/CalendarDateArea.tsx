@@ -25,7 +25,7 @@ const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => 
   const { _m, _d, _day } = getDateObjFromSeconds(sec);
   const [mouseOver, setMouseOver] = useState(false);
   const [activateCreate, setActivateCreate] = useState(false);
-  const [pos, setPos] = useState([0, 0]);
+  const [pos, setPos] = useState([0, 0, 0, 0]); // top right bottom left
 
   const handleMouseEnter = () => {
     setMouseOver(true);
@@ -37,6 +37,12 @@ const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => 
 
   const handleClick = () => {
     setActivateCreate(true);
+    const dateCellPos = dateCellRef.current?.getBoundingClientRect();
+    const top = dateCellPos?.top ?? 0;
+    const right = dateCellPos?.right ?? 0;
+    const bottom = dateCellPos?.bottom ?? 0;
+    const left = dateCellPos?.left ?? 0;
+    setPos([top, right, bottom, left]);
     calData.unshift(initCreateScheduleForm);
   };
 
@@ -71,7 +77,7 @@ const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => 
       </DateCell>
       {activateCreate && (
         <ModalPortal>
-          <CreateSchedule deactivateCreate={deactivateCreate} />
+          <CreateSchedule deactivateCreate={deactivateCreate} pos={pos} />
         </ModalPortal>
       )}
     </>

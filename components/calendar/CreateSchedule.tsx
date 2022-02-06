@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/css";
 import { Timestamp } from "@firebase/firestore";
@@ -41,9 +41,37 @@ export const initCreateScheduleForm: IUserCalendar = {
 
 interface ICreateScheduleProps {
   deactivateCreate: () => void;
+  pos: number[];
 }
 
-const CreateSchedule = ({ deactivateCreate }: ICreateScheduleProps) => {
+const CreateSchedule = ({ deactivateCreate, pos }: ICreateScheduleProps) => {
+  const [top, right, bottom, left] = pos;
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  let posStyle = {};
+  // 우측 정렬
+  if (windowWidth - left > windowWidth / 2)
+    posStyle = {
+      left: right,
+    };
+  // 좌측 정렬
+  else
+    posStyle = {
+      right: windowWidth - left,
+    };
+  // 상단 정렬
+  if (windowHeight - top > windowHeight / 2)
+    posStyle = {
+      ...posStyle,
+      top: top,
+    };
+  // 하단 정렬
+  else
+    posStyle = {
+      ...posStyle,
+      bottom: windowHeight - bottom,
+    };
+
   const [showPHolder, setShowPHolder] = useState(true);
   const { form, updateForm, handleChange, handleChangeCheckbox, initForm } = useForm<IUserCalendar>({
     initialForm: initCreateScheduleForm,
@@ -63,7 +91,7 @@ const CreateSchedule = ({ deactivateCreate }: ICreateScheduleProps) => {
 
   return (
     <>
-      <CreateScheduleOverlay role="dialog">
+      <CreateScheduleOverlay role="dialog" style={posStyle}>
         <form method="post" onSubmit={handleSubmit}>
           <TitleLabel htmlFor="title">
             {!form.title && showPHolder && <TitleLabelText className={placeholder_color}>일정 제목 추가</TitleLabelText>}
@@ -238,15 +266,13 @@ const TitleInput = styled.input`
 
 const CreateScheduleOverlay = styled.div`
   position: fixed;
+  margin: 4px;
   z-index: 100;
-  left: 10px;
-  top: 10px;
   width: 100%;
   padding: 2rem;
   max-width: 46rem;
-  trasnform: traslate(-50%, -50%);
   background: #fff;
-  box-shadow: 5px 5px 60px -10px rgba(66, 74, 106, 0.4);
+  box-shadow: 0 0 60px -10px rgba(66, 74, 106, 0.6);
   border-radius: 1rem;
 `;
 
