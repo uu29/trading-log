@@ -2,7 +2,7 @@ import { Timestamp } from "firebase/firestore";
 import { IFullDateObj } from "interface";
 // firestore.Timestamp 날짜 파싱에 관한 함수
 
-const oneDayMilliSeconds = 86400;
+export const oneDayMilliSeconds = 86400;
 
 // Date obj to seconds number
 export const secondsSinceEpoch = (d: any) => Math.floor(d / 1000);
@@ -14,6 +14,20 @@ export const getDateRangeByDay = (startDate: number, lastDate: number): number[]
   while (curDate <= lastDate) {
     result.push(curDate);
     curDate = curDate + oneDayMilliSeconds;
+  }
+  return result;
+};
+
+// 시작 시간부터 마지막 시간까지 일정 간격으로 나눈 시간 배열(seconds 데이터)
+export const getTimeRageByMilliSeconds = (startTime: number, lastTime: number, seconds: number): number[] => {
+  console.log("startTime: ", startTime);
+  console.log("lastTime: ", lastTime);
+  console.log("--------------------");
+  const result: number[] = [];
+  let curTime = startTime;
+  while (curTime <= lastTime) {
+    result.push(curTime);
+    curTime = curTime + seconds;
   }
   return result;
 };

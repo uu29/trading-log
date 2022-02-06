@@ -3,7 +3,13 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/css";
 import useForm from "hooks/useForm";
 import { IUserCalendar } from "interface";
-import { getDateObjFromTimestamp } from "core/firestore/timestamp";
+import {
+  formatDate,
+  getDateObjFromTimestamp,
+  getTimeRageByMilliSeconds,
+  secondsSinceEpoch,
+  oneDayMilliSeconds,
+} from "core/firestore/timestamp";
 
 const label_block = css`
   display: flex;
@@ -66,13 +72,30 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
     };
 
   const [showPHolder, setShowPHolder] = useState(true);
-  const [timeActive, setTimeActive] = useState(false);
+  const [inputTime, setInputTime] = useState<string | null>(null);
+  const [timeOptions, setTimeOptions] = useState<number[]>([]);
   const { form, updateForm, handleChange, handleChangeCheckbox, initForm } = useForm<IUserCalendar>({
     initialForm,
   });
-  console.log("----------form");
-  console.log(form);
   const { _y, _m, _d } = getDateObjFromTimestamp(form.date);
+
+  const handleClickActivateTime = () => {
+    // 현재보다 +1시간 미래 시간으로
+    const now = new Date();
+    const now_hours = now.getHours();
+    const now_minutes = now.getMinutes();
+    const next_hours = now_minutes > 0 ? now_hours + 1 : now_hours;
+    now.setHours(next_hours);
+    now.setMinutes(0);
+    now.setSeconds(0);
+    const timeText = formatDate(now, "%H:%M");
+    setInputTime(timeText);
+    // 30분 간격으로 시간 배열 리턴
+    const nowMs = secondsSinceEpoch(now);
+    const halfHourMs = 1800;
+    const time_options = getTimeRageByMilliSeconds(nowMs, nowMs + oneDayMilliSeconds - 1, halfHourMs);
+    setTimeOptions(time_options);
+  };
 
   const onFocusTitle = () => {
     setShowPHolder(false);
@@ -119,22 +142,15 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
           </label>
           <label htmlFor="time" className={label_inline}>
             <ClockIcon className={label_icon} />
-            <TimeController
-              onClick={() => {
-                setTimeActive(true);
-              }}
-              isActive={timeActive}
-            >
-              {timeActive ? (
+            <TimeController onClick={handleClickActivateTime} isActive={Boolean(inputTime)}>
+              {inputTime ? (
                 <>
-                  <TimeInput id="time" type="text" value="07:30" />
+                  <TimeInput id="time" type="text" value={inputTime} />
                   <TimeSelect>
                     <ul>
-                      <TimeSelectItem>07:30</TimeSelectItem>
-                      <TimeSelectItem>08:00</TimeSelectItem>
-                      <TimeSelectItem>08:30</TimeSelectItem>
-                      <TimeSelectItem>09:00</TimeSelectItem>
-                      <TimeSelectItem>09:30</TimeSelectItem>
+                      {timeOptions.map((sec) => (
+                        <TimeSelectItem key={sec}>{formatDate(new Date(sec * 1000), "%H:%M")}</TimeSelectItem>
+                      ))}
                     </ul>
                   </TimeSelect>
                 </>
@@ -265,7 +281,34 @@ const TimeSelect = styled.div`
   margin-top: 4px;
   background: #fff;
   box-shadow: 0 4px 8px 0 rgba(66, 74, 106, 0.35);
-  // text-align: center;
+  overflow: auto;
+  padding: 4px 0;
+
+  ::-webkit-scrollbar {
+    width: .9rem;
+  } /* 스크롤 바 */
+
+  ::-webkit-scrollbar-track {
+    background-color: #f3f2f2;
+  } /* 스크롤 바 밑의 배경 */
+
+  ::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+  } /* 실질적 스크롤 바 */
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #afafaf;
+  } /* 실질적 스크롤 바 위에 마우스를 올려다 둘 때 */
+
+  ::-webkit-scrollbar-thumb:active {
+    background: #818185;
+  } /* 실질적 스크롤 바를 클릭할 때 */
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  } /* 스크롤 바 상 하단 버튼 */
 `;
 
 const TimeSelectItem = styled.li`
