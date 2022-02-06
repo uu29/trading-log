@@ -1,4 +1,4 @@
-import React, { useState, useEffect, HTMLInputTypeAttribute } from "react";
+import React, { useState, useEffect } from "react";
 
 interface FormTypes<T> {
   initialForm: T;
@@ -7,10 +7,6 @@ interface FormTypes<T> {
 
 export default function useForm<T>({ initialForm, changeFormCb }: FormTypes<T>) {
   const [form, setForm] = useState(initialForm);
-
-  useEffect(() => {
-    setForm(initialForm);
-  }, [initialForm]);
 
   useEffect(() => {
     if (changeFormCb) changeFormCb(form);

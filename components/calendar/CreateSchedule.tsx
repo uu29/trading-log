@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/css";
-import { Timestamp } from "@firebase/firestore";
 import useForm from "hooks/useForm";
 import { IUserCalendar } from "interface";
 import { getDateObjFromTimestamp } from "core/firestore/timestamp";
@@ -67,11 +66,12 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
     };
 
   const [showPHolder, setShowPHolder] = useState(true);
+  const [timeActive, setTimeActive] = useState(false);
   const { form, updateForm, handleChange, handleChangeCheckbox, initForm } = useForm<IUserCalendar>({
     initialForm,
   });
-  console.log("-----------------form.date");
-  console.log(form.date);
+  console.log("----------form");
+  console.log(form);
   const { _y, _m, _d } = getDateObjFromTimestamp(form.date);
 
   const onFocusTitle = () => {
@@ -117,11 +117,33 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
             </DateValue>
             <input id="date" type="text" hidden value={form.date.seconds} />
           </label>
-          <TimeLabel htmlFor="time" className={label_inline}>
+          <label htmlFor="time" className={label_inline}>
             <ClockIcon className={label_icon} />
-            <TimeLabelText className={placeholder_color}>시간 추가</TimeLabelText>
-            {/* <input id="time" type="time" value={form?.time?.seconds ?? undefined} /> */}
-          </TimeLabel>
+            <TimeController
+              onClick={() => {
+                setTimeActive(true);
+              }}
+              isActive={timeActive}
+            >
+              {timeActive ? (
+                <>
+                  <TimeInput id="time" type="text" value="07:30" />
+                  <TimeSelect>
+                    <ul>
+                      <TimeSelectItem>07:30</TimeSelectItem>
+                      <TimeSelectItem>08:00</TimeSelectItem>
+                      <TimeSelectItem>08:30</TimeSelectItem>
+                      <TimeSelectItem>09:00</TimeSelectItem>
+                      <TimeSelectItem>09:30</TimeSelectItem>
+                    </ul>
+                  </TimeSelect>
+                </>
+              ) : (
+                "시간 추가"
+              )}
+            </TimeController>
+            <input id="time" type="text" value={form?.time?.seconds} hidden />
+          </label>
           <div className={label_inline}>
             <BellIcon />
             <label htmlFor="alert">
@@ -210,11 +232,56 @@ const AlrtText = styled.span<{ isChecked: boolean }>`
   transition: all 0.3s;
 `;
 
-const TimeLabel = styled.label`
+const TimeController = styled.div<{ isActive: boolean }>`
+  position: relative;
+  width: 9.4rem;
   height: 3.6rem;
+  line-height: 1;
+  padding: 0.9rem;
+  transition: all 0.3s;
+  border-radius: 2px;
+  color: #c1c5d8;
+
+  ${({ isActive }) =>
+    isActive
+      ? `
+    background: #f1f3f4;
+    color: #3b3e4a;
+  `
+      : `
+    cursor: pointer;
+    &:hover {
+      background: #f6f7f9;
+    }
+  `}
 `;
 
-const TimeLabelText = styled.span`
+const TimeSelect = styled.div`
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  max-height: 22rem;
+  margin-top: 4px;
+  background: #fff;
+  box-shadow: 0 4px 8px 0 rgba(66, 74, 106, 0.35);
+  // text-align: center;
+`;
+
+const TimeSelectItem = styled.li`
+  padding: 0.9rem 1.4rem;
+  cursor: pointer;
+  &:hover {
+    background: #ebedf3;
+  }
+`;
+
+const TimeInput = styled.input`
+  display: inline-block;
+  width: 100%;
+  background: transparent;
+  border: 0 none;
+  outline: 0 none;
   font-size: 1.7rem;
 `;
 
