@@ -76,6 +76,10 @@ export const getTimestampSecFromNumber = (_y: number, _m: number, _d: number) =>
   return Timestamp.fromDate(new Date(_y, _m, _d)).seconds;
 };
 
+export const getTimestampFromSec = (sec: number) => {
+  return Timestamp.fromDate(new Date(sec * 1000));
+};
+
 // yyyy/mm/dd 형식의 날짜 string을 00시 00분 00초로 초기화된 Timestamp로 파싱
 export const strDateToTimestamp = (strDate: string): Timestamp => {
   const [_y, _m, _d] = strDate.split("/");

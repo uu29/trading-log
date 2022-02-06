@@ -4,6 +4,7 @@ import { css } from "@emotion/css";
 import { Timestamp } from "@firebase/firestore";
 import useForm from "hooks/useForm";
 import { IUserCalendar } from "interface";
+import { getDateObjFromTimestamp } from "core/firestore/timestamp";
 
 const label_block = css`
   display: flex;
@@ -31,20 +32,13 @@ const placeholder_color = css`
   color: #c1c5d8;
 `;
 
-export const initCreateScheduleForm: IUserCalendar = {
-  title: "",
-  alert: false,
-  date: Timestamp.now(),
-  content: "",
-  user_email: "",
-};
-
 interface ICreateScheduleProps {
   deactivateCreate: () => void;
   pos: number[];
+  initialForm: IUserCalendar;
 }
 
-const CreateSchedule = ({ deactivateCreate, pos }: ICreateScheduleProps) => {
+const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleProps) => {
   const [top, right, bottom, left] = pos;
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
@@ -74,8 +68,11 @@ const CreateSchedule = ({ deactivateCreate, pos }: ICreateScheduleProps) => {
 
   const [showPHolder, setShowPHolder] = useState(true);
   const { form, updateForm, handleChange, handleChangeCheckbox, initForm } = useForm<IUserCalendar>({
-    initialForm: initCreateScheduleForm,
+    initialForm,
   });
+  console.log("-----------------form.date");
+  console.log(form.date);
+  const { _y, _m, _d } = getDateObjFromTimestamp(form.date);
 
   const onFocusTitle = () => {
     setShowPHolder(false);
@@ -108,7 +105,12 @@ const CreateSchedule = ({ deactivateCreate, pos }: ICreateScheduleProps) => {
           <label htmlFor="date" className={label_block}>
             <CalIcon className={label_icon}>날짜 선택</CalIcon>
             <DateValue type="button">
-              2022<span>년</span> 2<span>월</span> 14<span>일</span>
+              {_y}
+              <span>년&nbsp;</span>
+              {_m + 1}
+              <span>월&nbsp;</span>
+              {_d}
+              <span>일</span>
             </DateValue>
             <input id="date" type="text" hidden value={form.date.seconds} />
           </label>

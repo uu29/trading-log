@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { IUserCalendar } from "interface";
-import { getDateObjFromSeconds, todaySec } from "core/firestore/timestamp";
+import { getDateObjFromSeconds, getTimestampFromSec, todaySec } from "core/firestore/timestamp";
 import { colors, Label, item__number, DateCell, DateCreateBtn } from "./CalendarStyle";
-import CreateSchedule, { initCreateScheduleForm } from "./CreateSchedule";
+import CreateSchedule from "./CreateSchedule";
 import ModalPortal from "components/portal/ModalPortal";
 
 const CreateBtn = () => {
@@ -43,6 +43,16 @@ const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => 
     const bottom = dateCellPos?.bottom ?? 0;
     const left = dateCellPos?.left ?? 0;
     setPos([top, right, bottom, left]);
+    const tDate = getTimestampFromSec(sec);
+
+    const initCreateScheduleForm: IUserCalendar = {
+      title: "",
+      alert: false,
+      date: tDate,
+      content: "",
+      user_email: "",
+    };
+
     calData.unshift(initCreateScheduleForm);
   };
 
@@ -77,7 +87,7 @@ const CalendarDateArea = ({ sec, calData, extraDay }: CalendarDateAreaProps) => 
       </DateCell>
       {activateCreate && (
         <ModalPortal>
-          <CreateSchedule deactivateCreate={deactivateCreate} pos={pos} />
+          <CreateSchedule deactivateCreate={deactivateCreate} pos={pos} initialForm={calData[0]} />
         </ModalPortal>
       )}
     </>
