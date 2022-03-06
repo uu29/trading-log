@@ -112,78 +112,100 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
   return (
     <>
       <CreateScheduleOverlay role="dialog" style={posStyle}>
-        <CloseBtn type="button" onClick={deactivateCreate}>
-          닫기
-        </CloseBtn>
-        <Form method="post" onSubmit={handleSubmit}>
-          <TitleLabel htmlFor="title">
-            {!form.title && showPHolder && <TitleLabelText className={placeholder_color}>일정 제목 추가</TitleLabelText>}
-            <TitleInput
-              onFocus={onFocusTitle}
-              onBlur={onBlurTitle}
-              id="title"
-              name="title"
-              type="text"
-              value={form.title}
-              onChange={handleChange}
-            />
-          </TitleLabel>
-          <label htmlFor="date" className={label_block}>
-            <CalIcon className={label_icon}>날짜 선택</CalIcon>
-            <DateValue type="button">
-              {_y}
-              <span>년&nbsp;</span>
-              {_m + 1}
-              <span>월&nbsp;</span>
-              {_d}
-              <span>일</span>
-            </DateValue>
-            <input id="date" type="text" hidden value={form.date.seconds} />
-          </label>
-          <label htmlFor="time" className={label_inline}>
-            <ClockIcon className={label_icon} />
-            <TimeController onClick={handleClickActivateTime} isActive={Boolean(inputTime)}>
-              {inputTime ? (
-                <>
-                  <TimeInput id="time" type="text" value={inputTime} />
-                  <TimeSelect>
-                    <ul>
-                      {timeOptions.map((sec) => (
-                        <TimeSelectItem key={sec}>{formatDate(new Date(sec * 1000), "%H:%M")}</TimeSelectItem>
-                      ))}
-                    </ul>
-                  </TimeSelect>
-                </>
-              ) : (
-                "시간 추가"
-              )}
-            </TimeController>
-            <input id="time" type="text" value={form?.time?.seconds} hidden />
-          </label>
-          <div className={label_inline}>
-            <BellIcon />
-            <label htmlFor="alert">
-              <SwitchBox>
-                <input id="alert" name="alert" type="checkbox" checked={form.alert} onChange={handleChangeCheckbox} hidden />
-                <AlrtController isChecked={form.alert} />
-              </SwitchBox>
+        <CreateScheduleContainer>
+          <Ticks />
+          <CloseBtn type="button" onClick={deactivateCreate}>
+            닫기
+          </CloseBtn>
+          <form method="post" onSubmit={handleSubmit}>
+            <TitleLabel htmlFor="title">
+              {!form.title && showPHolder && <TitleLabelText className={placeholder_color}>일정 제목 추가</TitleLabelText>}
+              <TitleInput
+                onFocus={onFocusTitle}
+                onBlur={onBlurTitle}
+                id="title"
+                name="title"
+                type="text"
+                value={form.title}
+                onChange={handleChange}
+              />
+            </TitleLabel>
+            <label htmlFor="date" className={label_block}>
+              <CalIcon className={label_icon}>날짜 선택</CalIcon>
+              <DateValue type="button">
+                {_y}
+                <span>년&nbsp;</span>
+                {_m + 1}
+                <span>월&nbsp;</span>
+                {_d}
+                <span>일</span>
+              </DateValue>
+              <input id="date" type="text" hidden value={form.date.seconds} />
             </label>
-            <AlrtText isChecked={form.alert}>{form.alert ? "알람 켜짐" : "알람 꺼짐"}</AlrtText>
-          </div>
-          <ContentArea>
-            <EditIcon>설명 추가</EditIcon>
-            <ContentText id="content" name="content" value={form.content} rows={4} cols={42} onChange={handleChange} />
-          </ContentArea>
-        </Form>
+            <label htmlFor="time" className={label_inline}>
+              <ClockIcon className={label_icon} />
+              <TimeController onClick={handleClickActivateTime} isActive={Boolean(inputTime)}>
+                {inputTime ? (
+                  <>
+                    <TimeInput id="time" type="text" value={inputTime} />
+                    <TimeSelect>
+                      <ul>
+                        {timeOptions.map((sec) => (
+                          <TimeSelectItem key={sec}>{formatDate(new Date(sec * 1000), "%H:%M")}</TimeSelectItem>
+                        ))}
+                      </ul>
+                    </TimeSelect>
+                  </>
+                ) : (
+                  "시간 추가"
+                )}
+              </TimeController>
+              <input id="time" type="text" value={form?.time?.seconds} hidden />
+            </label>
+            <div className={label_inline}>
+              <BellIcon />
+              <label htmlFor="alert">
+                <SwitchBox>
+                  <input id="alert" name="alert" type="checkbox" checked={form.alert} onChange={handleChangeCheckbox} hidden />
+                  <AlrtController isChecked={form.alert} />
+                </SwitchBox>
+              </label>
+              <AlrtText isChecked={form.alert}>{form.alert ? "알람 켜짐" : "알람 꺼짐"}</AlrtText>
+            </div>
+            <ContentArea>
+              <EditIcon>설명 추가</EditIcon>
+              <ContentText id="content" name="content" value={form.content} rows={4} cols={42} onChange={handleChange} />
+            </ContentArea>
+          </form>
+        </CreateScheduleContainer>
       </CreateScheduleOverlay>
       <Background onClick={deactivateCreate} />
     </>
   );
 };
 
+const CreateScheduleContainer = styled.div`
+  position: relative;
+  padding: 3.5rem 2rem 2rem 2rem;
+`;
+
+const Ticks = styled.div`
+  position: absolute;
+  top: 3rem;
+  left: -3rem;
+  width: 0;
+  height: 0;
+  border-right: 2.5rem solid transparent;
+  border-left: 2.5rem solid transparent;
+  border-bottom: 4rem solid #fff;
+  transform: rotate(-90deg);
+`;
+
 const CloseBtn = styled.button`
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
   display: block;
-  float: right;
   margin: 8px 13px;
   text-indent: -9999px;
   height: 2.6rem;
@@ -285,7 +307,7 @@ const TimeSelect = styled.div`
   padding: 4px 0;
 
   ::-webkit-scrollbar {
-    width: .9rem;
+    width: 0.9rem;
   } /* 스크롤 바 */
 
   ::-webkit-scrollbar-track {
@@ -396,17 +418,13 @@ const TitleInput = styled.input`
 
 const CreateScheduleOverlay = styled.div`
   position: fixed;
-  margin: -8px 4px 0 4px;
+  margin: -3.5rem 2rem;
   z-index: 100;
   width: 100%;
   max-width: 46rem;
   background: #fff;
   box-shadow: 0 0 60px -10px rgba(66, 74, 106, 0.6);
   border-radius: 1rem;
-`;
-
-const Form = styled.form`
-  margin: 3.5rem 2rem 2rem 2rem;
 `;
 
 export default CreateSchedule;
