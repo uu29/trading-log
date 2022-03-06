@@ -47,29 +47,50 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
   const [top, right, bottom, left] = pos;
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
-  let posStyle = {};
+  let layerPosStyle = {};
+  let tickPosStyle = {};
   // 우측 정렬
-  if (windowWidth - left > windowWidth / 2)
-    posStyle = {
+  if (windowWidth - left > windowWidth / 2) {
+    layerPosStyle = {
       left: right,
     };
+    tickPosStyle = {
+      left: "-3rem",
+      transform: "rotate(-90deg)",
+    };
+  }
   // 좌측 정렬
-  else
-    posStyle = {
+  else {
+    layerPosStyle = {
       right: windowWidth - left,
     };
+    tickPosStyle = {
+      right: "-3rem",
+      transform: "rotate(90deg)",
+    };
+  }
   // 상단 정렬
-  if (windowHeight - top > windowHeight / 2)
-    posStyle = {
-      ...posStyle,
+  if (windowHeight - top > windowHeight / 2) {
+    layerPosStyle = {
+      ...layerPosStyle,
       top: top,
     };
+    tickPosStyle = {
+      ...tickPosStyle,
+      top: "5rem",
+    };
+  }
   // 하단 정렬
-  else
-    posStyle = {
-      ...posStyle,
+  else {
+    layerPosStyle = {
+      ...layerPosStyle,
       bottom: windowHeight - bottom,
     };
+    tickPosStyle = {
+      ...tickPosStyle,
+      bottom: "5rem",
+    };
+  }
 
   const [showPHolder, setShowPHolder] = useState(true);
   const [inputTime, setInputTime] = useState<string | null>(null);
@@ -111,9 +132,9 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
 
   return (
     <>
-      <CreateScheduleOverlay role="dialog" style={posStyle}>
+      <CreateScheduleLayer role="dialog" style={layerPosStyle}>
         <CreateScheduleContainer>
-          <Ticks />
+          <Ticks style={tickPosStyle} />
           <CloseBtn type="button" onClick={deactivateCreate}>
             닫기
           </CloseBtn>
@@ -178,7 +199,7 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
             </ContentArea>
           </form>
         </CreateScheduleContainer>
-      </CreateScheduleOverlay>
+      </CreateScheduleLayer>
       <Background onClick={deactivateCreate} />
     </>
   );
@@ -191,14 +212,11 @@ const CreateScheduleContainer = styled.div`
 
 const Ticks = styled.div`
   position: absolute;
-  top: 3rem;
-  left: -3rem;
   width: 0;
   height: 0;
   border-right: 2.5rem solid transparent;
   border-left: 2.5rem solid transparent;
   border-bottom: 4rem solid #fff;
-  transform: rotate(-90deg);
 `;
 
 const CloseBtn = styled.button`
@@ -416,9 +434,9 @@ const TitleInput = styled.input`
   border: 0 none;
 `;
 
-const CreateScheduleOverlay = styled.div`
+const CreateScheduleLayer = styled.div`
   position: fixed;
-  margin: -3.5rem 2rem;
+  margin: -3.5rem 4px;
   z-index: 100;
   width: 100%;
   max-width: 46rem;
