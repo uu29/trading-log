@@ -70,7 +70,7 @@ const TimeController = ({ selectedDate, onChangeCallback }: ITimeController) => 
     <TimeControllerWrap isActive={Boolean(inputTime)}>
       {inputTime ? (
         <>
-          <TimeInput id="time" type="text" value={inputTime} onClick={handleClickInput} />
+          <TimeInput id="time" type="text" value={inputTime} onClick={handleClickInput} readOnly />
           {isOpen && (
             <TimeSelect>
               <ul>
@@ -117,6 +117,7 @@ const FullText = styled.div`
   padding: 0.9rem;
   width: 100%;
   height: 100%;
+  color: #c1c5d8;
 `;
 
 const TimeSelect = styled.div`

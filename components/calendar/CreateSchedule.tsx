@@ -6,6 +6,10 @@ import { IUserCalendar } from "interface";
 import TimeController from "./TimeController";
 import { getDateObjFromTimestamp } from "core/firestore/timestamp";
 import { Timestamp } from "@firebase/firestore";
+import { useSession } from "next-auth/react";
+import { setDocData } from "core/firestore";
+import { toast } from "@toast-controller";
+const COL_NAME = "user_calendar";
 
 const label_block = css`
   display: flex;
@@ -40,6 +44,8 @@ interface ICreateScheduleProps {
 }
 
 const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleProps) => {
+  const { data: session } = useSession();
+  const [submitting, setSubmitting] = useState(false);
   const [top, right, bottom, left] = pos;
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
@@ -104,6 +110,23 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting) return;
+    if (!session?.user?.email) return;
+    setSubmitting(true);
+    const newForm: IUserCalendar = { ...form, user_email: session.user.email };
+    const unique_key = form.title + form.date + form.time;
+    setDocData<IUserCalendar>(COL_NAME, unique_key, newForm)
+      .then(() => {
+        toast.show({ message: "등록되었습니다.", type: "success" });
+        initForm();
+        deactivateCreate();
+      })
+      .catch(() => {
+        toast.show({ message: "등록 실패. 다시 시도해주세요.", type: "fail" });
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
   const selectTimeCb = (time: Timestamp) => {
@@ -141,12 +164,13 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
                 {_d}
                 <span>일</span>
               </DateValue>
-              <input id="date" type="text" hidden value={form.date.seconds} />
+              <input id="date" name="date" type="text" hidden value={form.date.seconds} readOnly />
+              <input id="user_email" name="user_email" type="text" hidden value={session?.user?.email ?? ""} readOnly />
             </label>
             <label htmlFor="time" className={label_inline}>
               <ClockIcon className={label_icon} />
               <TimeController selectedDate={form.date} onChangeCallback={selectTimeCb} />
-              <input id="time" type="text" value={form?.time?.seconds} hidden />
+              <input id="time" name="time" type="text" value={form?.time?.seconds} hidden />
             </label>
             <div className={label_inline}>
               <BellIcon />
@@ -162,6 +186,7 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
               <EditIcon>설명 추가</EditIcon>
               <ContentText id="content" name="content" value={form.content} rows={4} cols={42} onChange={handleChange} />
             </ContentArea>
+            <SubmitBtn>저장</SubmitBtn>
           </form>
         </CreateScheduleContainer>
       </CreateScheduleLayer>
@@ -169,6 +194,30 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
     </>
   );
 };
+
+const SubmitBtn = styled.button`
+  display: block;
+  margin: 1rem 0;
+  width: 12rem;
+  height: 3.8rem;
+  line-height: 3.8rem;
+  font-size: 1.6rem;
+  float: right;
+  background: #2d96f6;
+  color: #fff;
+
+  &::after {
+    display: block;
+    width: 0;
+    height: 100%;
+    content: "";
+    clear: both;
+  }
+
+  &:hover {
+    background: #238cee;
+  }
+`;
 
 const CreateScheduleContainer = styled.div`
   position: relative;
