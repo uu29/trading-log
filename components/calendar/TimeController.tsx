@@ -84,7 +84,7 @@ const TimeController = ({ selectedDate, onChangeCallback }: ITimeController) => 
           )}
         </>
       ) : (
-        <span onClick={handleClickActivate}>시간 추가</span>
+        <FullText onClick={handleClickActivate}>시간 추가</FullText>
       )}
     </TimeControllerWrap>
   );
@@ -95,7 +95,6 @@ const TimeControllerWrap = styled.div<{ isActive: boolean }>`
   width: 9.4rem;
   height: 3.6rem;
   line-height: 1;
-  padding: 0.9rem;
   transition: all 0.3s;
   border-radius: 2px;
   color: #c1c5d8;
@@ -112,6 +111,12 @@ const TimeControllerWrap = styled.div<{ isActive: boolean }>`
       background: #f6f7f9;
     }
   `}
+`;
+
+const FullText = styled.div`
+  padding: 0.9rem;
+  width: 100%;
+  height: 100%;
 `;
 
 const TimeSelect = styled.div`
@@ -163,6 +168,7 @@ const TimeSelectItem = styled.li<{ isActive: boolean }>`
 `;
 
 const TimeInput = styled.input`
+  padding: 0.9rem;
   display: inline-block;
   width: 100%;
   background: transparent;
