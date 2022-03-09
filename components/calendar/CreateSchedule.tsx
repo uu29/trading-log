@@ -106,8 +106,7 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
     e.preventDefault();
   };
 
-  const selectTimeCb = (hours: number, minutes: number) => {
-    const time = Timestamp.fromDate(new Date(_y, _m, _d, hours, minutes));
+  const selectTimeCb = (time: Timestamp) => {
     updateForm({ time });
   };
 
@@ -146,7 +145,7 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
             </label>
             <label htmlFor="time" className={label_inline}>
               <ClockIcon className={label_icon} />
-              <TimeController initTime={form?.time} selectedDate={form.date} onChangeCallback={selectTimeCb} />
+              <TimeController selectedDate={form.date} onChangeCallback={selectTimeCb} />
               <input id="time" type="text" value={form?.time?.seconds} hidden />
             </label>
             <div className={label_inline}>

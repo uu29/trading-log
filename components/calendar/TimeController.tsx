@@ -1,30 +1,31 @@
-import { formatDate, getTimeRageByMilliSeconds, secondsSinceEpoch, oneDayMilliSeconds } from "core/firestore/timestamp";
+import {
+  formatDate,
+  getTimeRageByMilliSeconds,
+  secondsSinceEpoch,
+  oneDayMilliSeconds,
+  getTimestampFromSec,
+} from "core/firestore/timestamp";
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Timestamp } from "@firebase/firestore";
 
 interface ITimeController {
-  initTime: Timestamp | undefined;
   selectedDate: Timestamp;
-  onChangeCallback: (hours: number, minutes: number) => void;
+  onChangeCallback: (time: Timestamp) => void;
 }
 
-const getInputTime = (timestamp: Timestamp | undefined) => {
-  if (!timestamp) return "";
-  const newTime = new Date(timestamp.seconds * 1000);
+const getInputTime = (sec: number) => {
+  const newTime = new Date(sec * 1000);
   return formatDate(newTime, "%H:%M");
 };
 
-const TimeController = ({ initTime, selectedDate, onChangeCallback }: ITimeController) => {
+const TimeController = ({ selectedDate, onChangeCallback }: ITimeController) => {
   const [inputTime, setInputTime] = useState<string>("");
   const [timeOptions, setTimeOptions] = useState<number[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    setInputTime(getInputTime(initTime));
-  }, [initTime]);
-
-  const handleClickActivate = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  const handleClickActivate = (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation();
     // 현재보다 +1시간 미래 시간으로
     const now = new Date();
     if (secondsSinceEpoch(now) >= selectedDate.seconds) {
@@ -45,12 +46,18 @@ const TimeController = ({ initTime, selectedDate, onChangeCallback }: ITimeContr
     const halfHourMs = 1800;
     const time_options = getTimeRageByMilliSeconds(nowMs, nowMs + oneDayMilliSeconds - 1, halfHourMs);
     setTimeOptions(time_options);
+    setIsOpen(true);
   };
 
-  const handleClickItem = (val: Date) => {
-    const hours = val.getHours();
-    const minutes = val.getMinutes();
-    onChangeCallback(hours, minutes);
+  const handleClickItem = (e: React.MouseEvent<HTMLLIElement>, sec: number) => {
+    e.preventDefault();
+    onChangeCallback(getTimestampFromSec(sec));
+    setInputTime(getInputTime(sec));
+    setIsOpen(false);
+  };
+
+  const handleClickInput = (e: React.MouseEvent<HTMLInputElement>) => {
+    setIsOpen(true);
   };
 
   const getTimeFormat = (sec: number) => formatDate(new Date(sec * 1000), "%H:%M");
@@ -60,22 +67,24 @@ const TimeController = ({ initTime, selectedDate, onChangeCallback }: ITimeContr
   };
 
   return (
-    <TimeControllerWrap onClick={handleClickActivate} isActive={Boolean(inputTime)}>
+    <TimeControllerWrap isActive={Boolean(inputTime)}>
       {inputTime ? (
         <>
-          <TimeInput id="time" type="text" value={inputTime} />
-          <TimeSelect>
-            <ul>
-              {timeOptions.map((sec) => (
-                <TimeSelectItem key={sec} isActive={checkIsActive(sec)} onClick={() => handleClickItem(new Date(sec * 1000))}>
-                  {getTimeFormat(sec)}
-                </TimeSelectItem>
-              ))}
-            </ul>
-          </TimeSelect>
+          <TimeInput id="time" type="text" value={inputTime} onClick={handleClickInput} />
+          {isOpen && (
+            <TimeSelect>
+              <ul>
+                {timeOptions.map((sec) => (
+                  <TimeSelectItem key={sec} isActive={checkIsActive(sec)} onClick={(e) => handleClickItem(e, sec)}>
+                    {getTimeFormat(sec)}
+                  </TimeSelectItem>
+                ))}
+              </ul>
+            </TimeSelect>
+          )}
         </>
       ) : (
-        "시간 추가"
+        <span onClick={handleClickActivate}>시간 추가</span>
       )}
     </TimeControllerWrap>
   );
