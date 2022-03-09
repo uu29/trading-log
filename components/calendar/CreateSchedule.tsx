@@ -146,7 +146,7 @@ const CreateSchedule = ({ deactivateCreate, pos, initialForm }: ICreateScheduleP
             </label>
             <label htmlFor="time" className={label_inline}>
               <ClockIcon className={label_icon} />
-              <TimeController initVal={form?.time} onChangeCallback={selectTimeCb} />
+              <TimeController initTime={form?.time} selectedDate={form.date} onChangeCallback={selectTimeCb} />
               <input id="time" type="text" value={form?.time?.seconds} hidden />
             </label>
             <div className={label_inline}>

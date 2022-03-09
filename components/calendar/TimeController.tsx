@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Timestamp } from "@firebase/firestore";
 
 interface ITimeController {
-  initVal: Timestamp | undefined;
+  initTime: Timestamp | undefined;
+  selectedDate: Timestamp;
   onChangeCallback: (hours: number, minutes: number) => void;
 }
 
@@ -14,22 +15,27 @@ const getInputTime = (timestamp: Timestamp | undefined) => {
   return formatDate(newTime, "%H:%M");
 };
 
-const TimeController = ({ initVal, onChangeCallback }: ITimeController) => {
+const TimeController = ({ initTime, selectedDate, onChangeCallback }: ITimeController) => {
   const [inputTime, setInputTime] = useState<string>("");
   const [timeOptions, setTimeOptions] = useState<number[]>([]);
 
   useEffect(() => {
-    setInputTime(getInputTime(initVal));
-  }, [initVal]);
+    setInputTime(getInputTime(initTime));
+  }, [initTime]);
 
   const handleClickActivate = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     // 현재보다 +1시간 미래 시간으로
     const now = new Date();
-    const now_hours = now.getHours();
-    const now_minutes = now.getMinutes();
-    const next_hours = now_minutes > 0 ? now_hours + 1 : now_hours;
-    now.setHours(next_hours);
+    if (secondsSinceEpoch(now) >= selectedDate.seconds) {
+      const now_hours = now.getHours();
+      const now_minutes = now.getMinutes();
+      const next_hours = now_minutes > 0 ? now_hours + 1 : now_hours;
+      now.setHours(next_hours);
+    } else {
+      // 선택된 날짜가 미래면 00시부터 선택 가능하도록
+      now.setHours(0);
+    }
     now.setMinutes(0);
     now.setSeconds(0);
     const timeText = formatDate(now, "%H:%M");
