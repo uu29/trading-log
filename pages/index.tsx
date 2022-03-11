@@ -12,6 +12,7 @@ import { where } from "@firebase/firestore";
 import { numberWithCommas } from "lib/common";
 import { ISessionUser, ITradingDailyLog } from "interface";
 import { TradingType, TradingTypes } from "interface";
+import { dim_animation } from "styles/StyleLib";
 const trading_collection = "user_trading_daily";
 
 interface IHomeProps {
@@ -23,6 +24,7 @@ const Home = ({ session_user }: IHomeProps) => {
   const user_email = session_user?.email ?? "";
   const [error, setError] = useState();
   const [data, setData] = useState<ITradingDailyLog[]>([]);
+  const [loading, setLoading] = useState(true);
   const [displayData, setDisplayData] = useState<ITradingDailyLog[]>([]);
 
   useEffect(() => {
@@ -32,11 +34,17 @@ const Home = ({ session_user }: IHomeProps) => {
   useEffect(() => {
     fetchQueryData<ITradingDailyLog>(trading_collection, [where("user_email", "==", user_email)])
       .then((res) => setData(res))
-      .catch((err) => setError(err));
-  }, []);
+      .catch((err) => setError(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [user_email]);
 
   useEffect(() => {
     setDisplayData(data);
+    () => {
+      setLoading(true);
+    };
   }, [data]);
 
   useEffect(() => {
@@ -52,12 +60,38 @@ const Home = ({ session_user }: IHomeProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
+  if (loading)
+    return (
+      <LoadingWrap>
+        <div className="loading_bar" />
+        <div className="loading_bar" />
+        <div className="loading_bar" />
+        <div className="loading_bar" />
+      </LoadingWrap>
+    );
+  else if (!data.length)
+    return (
+      <DefaultView>
+        <div>
+          <p className="main_copyright">
+            하루하루 <strong>매매일지</strong>를 기록해보세요.
+          </p>
+          <div className="bar" />
+          <div className="bar" />
+          <div className="bar" />
+          <Link href="/create">
+            <a className="create_link">매매일지 기록하기</a>
+          </Link>
+        </div>
+      </DefaultView>
+    );
+
   return (
     <Section>
       <SearchBar />
       <ul>
-        {displayData.map((t, i) => (
-          <List key={i}>
+        {displayData.map((t) => (
+          <List key={t.stock_name}>
             <Link href={{ pathname: "/[stock_name]", query: { stock_name: t.stock_name } }} passHref>
               <ListA>
                 <StockName>{t.stock_name}</StockName>
@@ -79,6 +113,71 @@ const Home = ({ session_user }: IHomeProps) => {
     </Section>
   );
 };
+
+const DefaultView = styled.div`
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2.5rem;
+  padding: 5rem;
+  background: #f2f3f8;
+  border-radius: 2rem;
+  > div {
+    text-align: center;
+    width: 100%;
+  }
+
+  .main_copyright {
+    margin-bottom: 5rem;
+    font-size: 1.8rem;
+  }
+
+  .bar {
+    background: #e3e5f0;
+    height: 4.6rem;
+    margin: 2rem 0;
+    &:nth-of-type(2) {
+      width: 95%;
+    }
+    &:nth-of-type(3) {
+      width: 90%;
+    }
+  }
+
+  .create_link {
+    display: block;
+    margin: 8rem auto 0;
+    height: 5.6rem;
+    width: 28rem;
+    background: #f99c2f;
+    color: #fff;
+    line-height: 5.6rem;
+    text-align: center;
+    font-size: 1.8rem;
+    border-radius: 1rem;
+  }
+`;
+
+const LoadingWrap = styled.div`
+  flex: 1 0 0;
+  > .loading_bar {
+    background: #dee0e9;
+    height: 7.2rem;
+    margin: 2rem 0;
+
+    &:nth-of-type(2) {
+      width: 95%;
+    }
+    &:nth-of-type(3) {
+      width: 90%;
+    }
+    &:nth-of-type(4) {
+      width: 85%;
+    }
+    ${dim_animation};
+  }
+`;
 
 const Section = styled.section`
   flex: 1 0 0;
