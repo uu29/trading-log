@@ -4,7 +4,6 @@ Assign: trading-log README
 
 # Description
 
----
 
 주식 매매일지를 기록할 수 있는 앱입니다.
 
@@ -13,14 +12,12 @@ Assign: trading-log README
 
 # Usage
 
----
 
 1. `yarn` | `npm i`
 2. `yarn dev` | `npm run dev`
 
 # Details
 
----
 
 - 파이어베이스 Firestore 사용
 - 주식 매매일지/일정관리 CRUD 구현
@@ -32,9 +29,8 @@ Assign: trading-log README
 
 # Architecture
 
----
 
-![trading-log_architecture.png](README%20md%20bf6f6/trading-log_architecture.png)
+![trading-log_architecture.png](./README_static/trading-log_architecture.png)
 
 | components | 컴포넌트 |
 | --- | --- |
@@ -50,7 +46,6 @@ Assign: trading-log README
 
 # Trouble Shooting
 
----
 
 ### 파이어스토어에 저장된 Timestamp을 컴포넌트에서 사용하는 Date 객체로 파싱 — timestamp.ts
 
@@ -312,7 +307,6 @@ export default Toast;
 
 # Preview
 
----
 
 - 로그인
 
