@@ -30,8 +30,7 @@
 
 | components | 컴포넌트 |
 | --- | --- |
-| core | 코어 기능 모음
-— auth, firestore method |
+| core | 코어 기능 모음(auth, firestore method) |
 | hooks | 커스텀 훅스 |
 | lib | 공통함수 |
 | pages | next.js routers |
